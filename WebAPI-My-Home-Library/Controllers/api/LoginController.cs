@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using WebAPI_My_Home_Library.DTOs.Login;
+using WebAPI_My_Home_Library.Filters;
+using WebAPI_My_Home_Library.Models;
+using WebAPI_My_Home_Library.Services;
 
 namespace WebAPI_My_Home_Library.Controllers.api
 {
@@ -17,21 +21,11 @@ namespace WebAPI_My_Home_Library.Controllers.api
         }
 
         [HttpPost]
-        public ActionResult Logar()
+        [ProducesResponseType(typeof(ResultModel<LoginRetornoDTO>), 200)]
+        public ResultModel<LoginRetornoDTO> Logar(LoginFilter filter)
         {
-            bool is_action = false;
-            string error = "";
-            try
-            {
-
-                is_action = true;
-            }
-            catch(Exception ex)
-            {
-                error = ex.Message;
-            }
-
-            return Json(new { error, is_action });
+            var retorno = LoginBusiness.Logar(filter);
+            return retorno;
         }
 
     }

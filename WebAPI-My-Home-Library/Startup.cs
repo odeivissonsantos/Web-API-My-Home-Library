@@ -1,16 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Globalization;
+using WebAPI_My_Home_Library.Services;
+using WebAPI_My_Home_Library.Utils;
 
 namespace WebAPI_My_Home_Library
 {
@@ -26,12 +22,17 @@ namespace WebAPI_My_Home_Library
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddScoped<LoginBusiness>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI - My Home Library", Version = "v1" });
             });
+
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
+
+            Settings.IsDesenv = Configuration["Ambiente"] == "1"; // 1 - Desenvolvimento e 2 - Produção;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
