@@ -31,3 +31,5 @@ D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Micr
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Newtonsoft.Json.dll
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
+D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\WebAPI-My-Home-Library.dll.config
+D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\obj\Debug\net5.0\WebAPI-My-Home-Library.dll.config
