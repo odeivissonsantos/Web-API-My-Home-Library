@@ -30,7 +30,7 @@ namespace WebAPI_My_Home_Library
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI_My_Home_Library", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI - My Home Library", Version = "v1" });
             });
         }
 
@@ -41,7 +41,7 @@ namespace WebAPI_My_Home_Library
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI_My_Home_Library v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI - My Home Library v1"));
             }
 
             app.UseHttpsRedirection();
