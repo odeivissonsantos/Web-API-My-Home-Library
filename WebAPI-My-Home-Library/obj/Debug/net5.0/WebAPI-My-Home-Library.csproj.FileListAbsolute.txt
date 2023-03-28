@@ -26,10 +26,9 @@ D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\obj\Debug\net5.0\WebA
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\obj\Debug\net5.0\ref\WebAPI-My-Home-Library.dll
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\obj\Debug\net5.0\WebAPI-My-Home-Library.pdb
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\obj\Debug\net5.0\WebAPI-My-Home-Library.genruntimeconfig.cache
-D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Community.Core.EnterpriseLibrary.dll
-D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
-D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Newtonsoft.Json.dll
-D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\WebAPI-My-Home-Library.dll.config
 D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\obj\Debug\net5.0\WebAPI-My-Home-Library.dll.config
+D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
+D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+D:\PROJETOS\Web-API-My-Home-Library\WebAPI-My-Home-Library\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
