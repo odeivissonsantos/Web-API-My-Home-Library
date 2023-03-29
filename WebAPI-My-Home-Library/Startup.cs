@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
+using WebAPI_My_Home_Library.Context;
 using WebAPI_My_Home_Library.Services;
 using WebAPI_My_Home_Library.Utils;
 
@@ -22,6 +24,8 @@ namespace WebAPI_My_Home_Library
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddEntityFrameworkSqlServer()
+                     .AddDbContext<MyHomeLibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStringDesenvolvimento")));
             services.AddScoped<LoginBusiness>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
