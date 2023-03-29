@@ -8,5 +8,6 @@ namespace WebAPI_My_Home_Library.DTOs.Login
     public class LoginRetornoDTO
     {
         public string NomeUsuario { get; set; }
+        public string Email { get; set; }
     }
 }

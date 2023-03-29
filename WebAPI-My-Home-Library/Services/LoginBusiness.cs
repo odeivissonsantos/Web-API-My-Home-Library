@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using WebAPI_My_Home_Library.Context;
 using WebAPI_My_Home_Library.DTOs.Login;
 using WebAPI_My_Home_Library.Filters;
 using WebAPI_My_Home_Library.Models;
@@ -11,24 +13,48 @@ namespace WebAPI_My_Home_Library.Services
     {
         public static bool isDesenv = Settings.IsDesenv;
 
-        public static ResultModel<LoginRetornoDTO> Logar(LoginFilter filter)
+        private readonly MyHomeLibraryContext _myHomeLibraryContext;
+        public LoginBusiness(MyHomeLibraryContext myHomeLibraryContext)
+        {
+            _myHomeLibraryContext = myHomeLibraryContext;
+
+        }
+
+        public ResultModel<LoginRetornoDTO> Logar(LoginFilter filter)
         {
             ResultModel<LoginRetornoDTO> data;
-            //DBGerenciamentoContext context = new DBGerenciamentoContext();
 
             try
             {
-                
+                var query = _myHomeLibraryContext.Usuario.Where(x => x.Email == filter.Email).FirstOrDefault();   
 
-                LoginRetornoDTO retorno = new LoginRetornoDTO()
+                if (query != null)
                 {
-                    
-                };
+                    if (query.Senha != filter.Senha) throw new Exception("Email/Senha inválido, verifique os dados e tente novamente!");
 
-                data = new ResultModel<LoginRetornoDTO>();
-                data.Items.Add(retorno);
+                    LoginRetornoDTO retorno = new LoginRetornoDTO()
+                    {
+                        NomeUsuario = query.Nome,
+                        Email = query.Email,
+                    };
 
-                return data;
+                    query.Data_Ultimo_Acesso = DateTime.Now;
+                    query.Quanidade_Acessos += 1;
+
+                    _myHomeLibraryContext.Update(query);
+                    _myHomeLibraryContext.SaveChanges();
+
+                    data = new ResultModel<LoginRetornoDTO>(true);
+                    data.Items.Add(retorno);
+
+                    return data;
+                }
+                else
+                {
+                    data = new ResultModel<LoginRetornoDTO>(false);
+                    data.Messages.Add(new SystemMessageModel { Message = "Email/Senha inválido, verifique os dados e tente novamente!", Type = SystemMessageTypeEnum.Error });
+                }
+                           
             }
             catch (Exception ex)
             {
@@ -37,7 +63,7 @@ namespace WebAPI_My_Home_Library.Services
 
             }
 
-            return null;
+            return data;
         }
         
     }

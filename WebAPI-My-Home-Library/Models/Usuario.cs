@@ -40,6 +40,12 @@ namespace WebAPI_My_Home_Library.Models
         public DateTime? Data_Ultimo_Acesso { get; set; }
 
         [Column("ide_perfil")]
-        public int Ide_Perfil { get; set; } = EnumCommon.PerfilEnum.Padrao.GetHashCode();       
+        public int Ide_Perfil { get; set; } = EnumCommon.PerfilEnum.Padrao.GetHashCode();
+
+        [Column("nome")]
+        public string Nome { get; set; }
+
+        [Column("sobrenome")]
+        public string Sobrenome { get; set; }
     }
 }
