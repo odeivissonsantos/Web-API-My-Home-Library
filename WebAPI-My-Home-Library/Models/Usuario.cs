@@ -13,7 +13,7 @@ namespace WebAPI_My_Home_Library.Models
         public int Ide_Usuario { get; set; }
 
         [Column("guid")]
-        public Guid Guid { get; set; } = Guid.NewGuid();
+        public string Guuid { get; set; }
 
         [Column("email")]
         public string Email { get; set; }
@@ -22,7 +22,7 @@ namespace WebAPI_My_Home_Library.Models
         public string Senha { get; set; }
 
         [Column("dtc_inclusao")]
-        public DateTime Data_Inclusao { get; set; }
+        public DateTime Data_Inclusao { get; set; } = DateTime.Now;
 
         [Column("sts_exclusao")]
         public bool Status_Exclusao { get; set; } = false;
@@ -34,7 +34,7 @@ namespace WebAPI_My_Home_Library.Models
         public string Cpf { get; set; }
 
         [Column("qtd_acessos")]
-        public int? Quanidade_Acessos { get; set; }
+        public int? Quanidade_Acessos { get; set; } = 0;
 
         [Column("dtc_ultimo_acesso")]
         public DateTime? Data_Ultimo_Acesso { get; set; }

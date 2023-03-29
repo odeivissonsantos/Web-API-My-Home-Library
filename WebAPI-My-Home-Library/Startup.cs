@@ -28,6 +28,7 @@ namespace WebAPI_My_Home_Library
             services.AddEntityFrameworkSqlServer()
                      .AddDbContext<MyHomeLibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStringDesenvolvimento")));
             services.AddScoped<LoginBusiness>();
+            services.AddScoped<UsuarioBusiness>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddControllers();
