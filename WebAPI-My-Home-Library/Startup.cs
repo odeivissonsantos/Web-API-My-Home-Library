@@ -31,6 +31,14 @@ namespace WebAPI_My_Home_Library
             services.AddScoped<UsuarioBusiness>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -52,17 +60,21 @@ namespace WebAPI_My_Home_Library
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI - My Home Library v1"));
             }
-
+          
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
 
+            app.UseCors("CorsPolicy");
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+
         }
     }
 }
