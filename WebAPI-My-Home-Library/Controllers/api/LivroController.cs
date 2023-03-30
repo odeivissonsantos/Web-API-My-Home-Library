@@ -33,5 +33,13 @@ namespace WebAPI_My_Home_Library.Controllers.api
             return retorno;
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
+        public ResultModel<Livro> BuscarLivrosPorUsuario(string guidUsuario)
+        {
+            var retorno = _livroBusiness.BuscarLivrosPorUsuario(guidUsuario);
+            return retorno;
+        }
+
     }
 }

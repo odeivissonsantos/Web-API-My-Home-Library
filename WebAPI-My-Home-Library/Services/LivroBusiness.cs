@@ -25,6 +25,7 @@ namespace WebAPI_My_Home_Library.Services
 
         }
 
+        #region SALVAR LIVRO
         public ResultModel<SalvarLivroRetornoDTO> Salvar(SalvarLivroFilter filter)
         {
             bool novo = false;
@@ -95,7 +96,7 @@ namespace WebAPI_My_Home_Library.Services
 
                 _myHomeLibraryContext.SaveChanges();
 
-                if(novo)
+                if (novo)
                 {
                     newUsuarioLivro.Guuid_Livro = newLivro.Guuid;
                     newUsuarioLivro.Guuid_Usuario = filter.Guuid_Usuario;
@@ -113,5 +114,47 @@ namespace WebAPI_My_Home_Library.Services
 
             return data;
         }
+        #endregion
+
+        #region LISTAR LIVROS POR USUÁRIO
+        public ResultModel<Livro> BuscarLivrosPorUsuario(string guidUsuario)
+        {
+            ResultModel<Livro> data = new ResultModel<Livro>(true);
+
+            try
+            {
+                if (string.IsNullOrEmpty(guidUsuario)) throw new Exception("Campo guid do usuário é obrigatório!");
+                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Guuid_Usuario == guidUsuario).ToList();
+
+                if (query != null)
+                {
+                    foreach (var item in query)
+                    {
+                        Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Guuid == item.Guuid_Livro).FirstOrDefault();
+
+                        if(livroUsuario != null)
+                        {
+                            data.Items.Add(livroUsuario);
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    data = new ResultModel<Livro>(true);
+                    data.Messages.Add(new SystemMessageModel { Message = "Este usuário ainda não possui livros cadastrados.", Type = SystemMessageTypeEnum.Info });
+                }
+            }
+            catch (Exception ex)
+            {
+                data = new ResultModel<Livro>(false);
+                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
+
+            }
+
+            return data;
+        }
+        #endregion
+
     }
 }
