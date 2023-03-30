@@ -29,6 +29,8 @@ namespace WebAPI_My_Home_Library
                      .AddDbContext<MyHomeLibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStringDesenvolvimento")));
             services.AddScoped<LoginBusiness>();
             services.AddScoped<UsuarioBusiness>();
+            services.AddScoped<LivroBusiness>();
+            services.AddScoped<Utilies>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddCors(options =>

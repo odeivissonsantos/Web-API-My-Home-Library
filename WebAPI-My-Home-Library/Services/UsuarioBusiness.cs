@@ -16,9 +16,11 @@ namespace WebAPI_My_Home_Library.Services
         public static bool isDesenv = Settings.IsDesenv;
 
         private readonly MyHomeLibraryContext _myHomeLibraryContext;
-        public UsuarioBusiness(MyHomeLibraryContext myHomeLibraryContext)
+        private readonly Utilies _utilies;
+        public UsuarioBusiness(MyHomeLibraryContext myHomeLibraryContext, Utilies utilies)
         {
             _myHomeLibraryContext = myHomeLibraryContext;
+            _utilies = utilies;
 
         }
 
@@ -40,7 +42,7 @@ namespace WebAPI_My_Home_Library.Services
                     query.Nome = filter.Nome;
                     query.Sobrenome = filter.Sobrenome;
                     query.Email = filter.Email;
-                    query.Cpf = query.Cpf;
+                    query.Cpf = filter.Cpf;
 
                     SalvarUsuarioRetornoDTO retorno = new SalvarUsuarioRetornoDTO()
                     {
@@ -55,8 +57,8 @@ namespace WebAPI_My_Home_Library.Services
                 }
                 else
                 {
-                    bool isExistsEmail = VerificaSeExiste(1, filter.Email);
-                    bool isExistsCpf = VerificaSeExiste(2, filter.Cpf);
+                    bool isExistsEmail = _utilies.VerificaSeExiste(1, filter.Email);
+                    bool isExistsCpf = _utilies.VerificaSeExiste(2, filter.Cpf);
 
                     if (isExistsEmail || isExistsCpf) throw new Exception("Usuário já cadastrado com esse Email/Cpf!");
 
@@ -95,28 +97,5 @@ namespace WebAPI_My_Home_Library.Services
             return data;
         }
 
-        private bool VerificaSeExiste(int tipo, string parametro) //1 - Email; 2 - CPF; 3 - Guid
-        {
-            bool isExists = false;
-
-            if (tipo == 1) {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Email == parametro).FirstOrDefault();
-                if (query != null) isExists = true;
-            }
-
-            if (tipo == 2)
-            {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Cpf == parametro).FirstOrDefault();
-                if (query != null) isExists = true;
-            }
-
-            if (tipo == 3)
-            {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Guuid == parametro).FirstOrDefault();
-                if (query != null) isExists = true;
-            }
-
-            return isExists;
-        }
     }
 }
