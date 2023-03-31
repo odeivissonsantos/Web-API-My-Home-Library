@@ -36,6 +36,7 @@ namespace WebAPI_My_Home_Library.Services
                     {
                         NomeUsuario = query.Nome,
                         Email = query.Email,
+                        GuidUsuario = query.Guuid
                     };
 
                     query.Data_Ultimo_Acesso = DateTime.Now;
