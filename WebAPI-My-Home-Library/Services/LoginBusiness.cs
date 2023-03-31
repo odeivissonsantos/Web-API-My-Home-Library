@@ -20,13 +20,14 @@ namespace WebAPI_My_Home_Library.Services
 
         }
 
+        #region LOGIN DO USUÁRIO
         public ResultModel<LoginRetornoDTO> Logar(LoginFilter filter)
         {
             ResultModel<LoginRetornoDTO> data;
 
             try
             {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Email == filter.Email).FirstOrDefault();   
+                var query = _myHomeLibraryContext.Usuario.Where(x => x.Email == filter.Email).FirstOrDefault();
 
                 if (query != null)
                 {
@@ -55,7 +56,7 @@ namespace WebAPI_My_Home_Library.Services
                     data = new ResultModel<LoginRetornoDTO>(false);
                     data.Messages.Add(new SystemMessageModel { Message = "Email/Senha inválido, verifique os dados e tente novamente!", Type = SystemMessageTypeEnum.Error });
                 }
-                           
+
             }
             catch (Exception ex)
             {
@@ -66,6 +67,7 @@ namespace WebAPI_My_Home_Library.Services
 
             return data;
         }
-        
+        #endregion
+
     }
 }

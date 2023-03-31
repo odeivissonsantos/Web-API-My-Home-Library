@@ -137,6 +137,7 @@ namespace WebAPI_My_Home_Library.Services
                             data.Items.Add(livroUsuario);
                         }
                     }
+                    data.Pages.TotalItems = data.Items.Count();
                     
                 }
                 else
@@ -149,6 +150,73 @@ namespace WebAPI_My_Home_Library.Services
             {
                 data = new ResultModel<Livro>(false);
                 data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
+
+            }
+
+            return data;
+        }
+        #endregion
+
+        #region BUSCAR LIVRO POR GUID
+        public ResultModel<Livro> BuscarPorGuid(string guidLivro)
+        {
+            ResultModel<Livro> data = new ResultModel<Livro>(true);
+
+            try
+            {
+                if (string.IsNullOrEmpty(guidLivro)) throw new Exception("Campo guid do livro é obrigatório!");
+                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Guuid == guidLivro).FirstOrDefault();
+
+                if (livroUsuario != null)
+                {
+                    data.Items.Add(livroUsuario);
+                }
+                else
+                {
+                    data = new ResultModel<Livro>(true);
+                    data.Messages.Add(new SystemMessageModel { Message = "Livro não encontrado!", Type = SystemMessageTypeEnum.Info });
+                }
+            }
+            catch (Exception ex)
+            {
+                data = new ResultModel<Livro>(false);
+                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
+
+            }
+
+            return data;
+        }
+        #endregion
+
+        #region EXCLUIR LIVRO
+        public ResultModel<string> Excluir(string guidLivro)
+        {
+            ResultModel<string> data = new ResultModel<string>(true);
+
+            try
+            {
+                if (string.IsNullOrEmpty(guidLivro)) throw new Exception("Campo guid do livro é obrigatório!");
+                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Guuid == guidLivro).FirstOrDefault();
+
+                if (livroUsuario == null) throw new Exception("Livro não encontrado!");
+
+                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Guuid_Livro == livroUsuario.Guuid).FirstOrDefault();
+
+                _myHomeLibraryContext.Livro.Remove(livroUsuario);
+                _myHomeLibraryContext.SaveChanges();
+
+                _myHomeLibraryContext.Usuario_Livro.Remove(query);
+                _myHomeLibraryContext.SaveChanges();
+
+                data.Messages.Add(new SystemMessageModel { Message = "Livro excluído com sucesso!", Type = SystemMessageTypeEnum.Success });
+                data.Items.Add(data.Messages[0].Message);
+
+            }
+            catch (Exception ex)
+            {
+                data = new ResultModel<string>(false);
+                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
+                data.Items.Add(data.Messages[0].Message);
 
             }
 

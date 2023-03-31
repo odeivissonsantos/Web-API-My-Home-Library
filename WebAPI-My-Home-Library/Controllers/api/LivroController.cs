@@ -41,5 +41,21 @@ namespace WebAPI_My_Home_Library.Controllers.api
             return retorno;
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
+        public ResultModel<Livro> BuscarPorGuid(string guidLivro)
+        {
+            var retorno = _livroBusiness.BuscarPorGuid(guidLivro);
+            return retorno;
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(ResultModel<string>), 200)]
+        public ResultModel<string> Excluir(string guidLivro)
+        {
+            var retorno = _livroBusiness.Excluir(guidLivro);
+            return retorno;
+        }
+
     }
 }

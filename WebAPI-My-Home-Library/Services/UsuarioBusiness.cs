@@ -24,6 +24,8 @@ namespace WebAPI_My_Home_Library.Services
 
         }
 
+        #region SALVAR USUÁRIO
+
         public ResultModel<SalvarUsuarioRetornoDTO> Salvar(SalvarUsuarioFilter filter)
         {
             bool novo = false;
@@ -33,7 +35,7 @@ namespace WebAPI_My_Home_Library.Services
 
             try
             {
-                if(!novo)
+                if (!novo)
                 {
                     var query = _myHomeLibraryContext.Usuario.Where(x => x.Guuid == filter.Guuid).FirstOrDefault();
 
@@ -50,7 +52,7 @@ namespace WebAPI_My_Home_Library.Services
                     };
 
                     _myHomeLibraryContext.Update(query);
-                    
+
                     data = new ResultModel<SalvarUsuarioRetornoDTO>(true);
                     data.Items.Add(retorno);
 
@@ -96,6 +98,9 @@ namespace WebAPI_My_Home_Library.Services
 
             return data;
         }
+
+        #endregion
+
 
     }
 }
