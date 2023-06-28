@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebAPI_My_Home_Library.DTOs.Usuario
 {
-    public class CadastrarUsuarioRetornoDTO
+    public class SalvarUsuarioRetornoDTO
     {
         public string Mensagem { get; set; }
     }

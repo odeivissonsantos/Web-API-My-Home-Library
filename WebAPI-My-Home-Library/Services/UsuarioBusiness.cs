@@ -26,68 +26,38 @@ namespace WebAPI_My_Home_Library.Services
 
         #region SALVAR USUÁRIO
 
-        public ResultModel<CadastrarUsuarioRetornoDTO> Salvar(SalvarUsuarioFilter filter)
+        public ResultModel<SalvarUsuarioRetornoDTO> AlterarDados(AlterarUsuarioFilter filter)
         {
-            bool novo = false;
-            ResultModel<CadastrarUsuarioRetornoDTO> data;
 
-            if (filter.Ide_Usuario <= 0) novo = true;
+            ResultModel<SalvarUsuarioRetornoDTO> data;
 
             try
             {
-                if (!novo)
-                {
-                    var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
 
-                    if (query == null) throw new Exception("Usuário não encontrado!");
+                var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
 
-                    query.Nome = filter.Nome;
-                    query.Sobrenome = filter.Sobrenome;
-                    query.Email = filter.Email;
+                if (query == null) throw new Exception("Usuário não encontrado!");
 
-                    CadastrarUsuarioRetornoDTO retorno = new CadastrarUsuarioRetornoDTO()
-                    {
-                        Mensagem = "Usuário atualizado com sucesso",
-                    };
+                query.Nome = filter.Nome;
+                query.Sobrenome = filter.Sobrenome;
+                query.Email = filter.Email;
 
-                    _myHomeLibraryContext.Update(query);
-
-                    data = new ResultModel<CadastrarUsuarioRetornoDTO>(true);
-                    data.Items.Add(retorno);
-
-                }
-                else
-                {
-                    bool isExistsEmail = _utilies.VerificaSeExiste(1, filter.Email);
-
-                    if (isExistsEmail) throw new Exception("Usuário já cadastrado com esse Email");
-
-                    Usuario newUsuario = new Usuario()
-                    {
-                        Nome = filter.Nome,
-                        Sobrenome = filter.Sobrenome,
-                        Email = filter.Email,
-                        Senha = filter.Senha
-                    };
-
-                    _myHomeLibraryContext.Add(newUsuario);
-
-                    CadastrarUsuarioRetornoDTO retorno = new CadastrarUsuarioRetornoDTO()
-                    {
-                        Mensagem = "Usuário cadastrado com sucesso!",
-                    };
-
-                    data = new ResultModel<CadastrarUsuarioRetornoDTO>(true);
-                    data.Items.Add(retorno);
-
-                }
-
+                _myHomeLibraryContext.Update(query);
                 _myHomeLibraryContext.SaveChanges();
 
+
+                SalvarUsuarioRetornoDTO retorno = new SalvarUsuarioRetornoDTO()
+                {
+                    Mensagem = "Usuário atualizado com sucesso",
+                };
+
+                data = new ResultModel<SalvarUsuarioRetornoDTO>(true);
+                data.Items.Add(retorno);
+ 
             }
             catch (Exception ex)
             {
-                data = new ResultModel<CadastrarUsuarioRetornoDTO>(false);
+                data = new ResultModel<SalvarUsuarioRetornoDTO>(false);
                 data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
 
             }

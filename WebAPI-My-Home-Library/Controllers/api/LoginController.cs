@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
 using WebAPI_My_Home_Library.DTOs.Login;
 using WebAPI_My_Home_Library.Filters;
 using WebAPI_My_Home_Library.Models;
@@ -21,19 +19,23 @@ namespace WebAPI_My_Home_Library.Controllers.api
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ResultModel<LoginRetornoDTO>), 200)]
-        public ResultModel<LoginRetornoDTO> Logar(LoginFilter filter)
+        [ProducesResponseType(typeof(ResultModel<LoginRetornoDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Logar(LoginFilter filter)
         {
             var retorno = _loginBusiness.Logar(filter);
-            return retorno;
+            return Ok(retorno);
+            //return retorno;
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ResultModel<CadastrarUsuarioRetornoDTO>), 201)]
-        public ResultModel<CadastrarUsuarioRetornoDTO> CadastrarNovoUsuario(NovoUsuarioFilter filter)
+        [ProducesResponseType(typeof(ResultModel<CadastrarUsuarioRetornoDTO>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult CadastrarNovoUsuario(NovoUsuarioFilter filter)
         {
             var retorno = _loginBusiness.CadastrarNovoUsuario(filter);
-            return retorno;
+
+            return Created("" , retorno);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,19 @@ namespace WebAPI_My_Home_Library.Controllers.api
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ResultModel<SalvarLivroRetornoDTO>), 200)]
-        public ResultModel<SalvarLivroRetornoDTO> Salvar(SalvarLivroFilter filter)
+        [ProducesResponseType(typeof(ResultModel<SalvarLivroRetornoDTO>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ResultModel<SalvarLivroRetornoDTO> Salvar([FromHeader(Name = "token")] string token, SalvarLivroFilter filter)
         {
+            var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
+
             var retorno = _livroBusiness.Salvar(filter);
             return retorno;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
+        [ProducesResponseType(typeof(ResultModel<Livro>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ResultModel<Livro> BuscarLivrosPorUsuario([FromHeader(Name = "token")] string token, long ide_usuario)
         {
             ResultModel<Livro> data = new();
@@ -54,7 +59,8 @@ namespace WebAPI_My_Home_Library.Controllers.api
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
+        [ProducesResponseType(typeof(ResultModel<Livro>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ResultModel<Livro> BuscarPorID([FromHeader(Name = "token")] string token, long ide_livro)
         {
             var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
@@ -64,7 +70,8 @@ namespace WebAPI_My_Home_Library.Controllers.api
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(ResultModel<string>), 200)]
+        [ProducesResponseType(typeof(ResultModel<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ResultModel<string> Excluir([FromHeader(Name = "token")] string token, long ide_livro)
         {
             var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
