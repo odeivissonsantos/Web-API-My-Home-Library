@@ -32,25 +32,25 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
         [HttpGet]
         [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
-        public ResultModel<Livro> BuscarLivrosPorUsuario(string guidUsuario)
+        public ResultModel<Livro> BuscarLivrosPorUsuario(long ide_usuario)
         {
-            var retorno = _livroBusiness.BuscarLivrosPorUsuario(guidUsuario);
+            var retorno = _livroBusiness.BuscarLivrosPorUsuario(ide_usuario);
             return retorno;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
-        public ResultModel<Livro> BuscarPorGuid(string guidLivro)
+        public ResultModel<Livro> BuscarPorID(long ide_livro)
         {
-            var retorno = _livroBusiness.BuscarPorGuid(guidLivro);
+            var retorno = _livroBusiness.BuscarPorID(ide_livro);
             return retorno;
         }
 
         [HttpDelete]
         [ProducesResponseType(typeof(ResultModel<string>), 200)]
-        public ResultModel<string> Excluir(string guidLivro)
+        public ResultModel<string> Excluir(long ide_livro)
         {
-            var retorno = _livroBusiness.Excluir(guidLivro);
+            var retorno = _livroBusiness.Excluir(ide_livro);
             return retorno;
         }
 

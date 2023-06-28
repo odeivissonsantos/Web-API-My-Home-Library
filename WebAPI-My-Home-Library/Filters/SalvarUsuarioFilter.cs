@@ -7,7 +7,7 @@ namespace WebAPI_My_Home_Library.Filters
 {
     public class SalvarUsuarioFilter
     {
-        public string Guuid { get; set; }
+        public long Ide_Usuario { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
         public string Cpf { get; set; }

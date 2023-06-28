@@ -33,11 +33,11 @@ namespace WebAPI_My_Home_Library.Services
             UsuarioLivro newUsuarioLivro = new UsuarioLivro();
             ResultModel<SalvarLivroRetornoDTO> data;
 
-            if (string.IsNullOrEmpty(filter.Guuid)) novo = true;
+            if (filter.Ide_Livro <= 0) novo = true;
 
             try
             {
-                if (string.IsNullOrEmpty(filter.Guuid_Usuario)) throw new Exception("Campo guid do usuário é obrigatório!");
+                if (filter.Ide_Usuario <= 0) throw new Exception("Campo id do usuário é obrigatório!");
                 if (string.IsNullOrEmpty(filter.Autor)) throw new Exception("Campo autor é obrigatório!");
                 if (filter.Ano <= 0) throw new Exception("Campo ano é obrigatório!");
                 if (string.IsNullOrEmpty(filter.Editora)) throw new Exception("Campo editora é obrigatório!");
@@ -45,7 +45,7 @@ namespace WebAPI_My_Home_Library.Services
 
                 if (!novo)
                 {
-                    var query = _myHomeLibraryContext.Livro.Where(x => x.Guuid == filter.Guuid).FirstOrDefault();
+                    var query = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == filter.Ide_Livro).FirstOrDefault();
 
                     if (query == null) throw new Exception("Livro não encontrado!");
 
@@ -70,10 +70,9 @@ namespace WebAPI_My_Home_Library.Services
                 }
                 else
                 {
-                    bool isExistsUsuario = _utilies.VerificaSeExiste(3, filter.Guuid_Usuario);
+                    bool isExistsUsuario = _utilies.VerificaSeExiste(3, filter.Ide_Usuario.ToString());
                     if (!isExistsUsuario) throw new Exception("Usuário não encontrado, digite um usuário válido");
 
-                    newLivro.Guuid = Guid.NewGuid().ToString();
                     newLivro.Ano = filter.Ano;
                     newLivro.Autor = filter.Autor;
                     newLivro.Codigo_Barras = filter.CodigoBarras;
@@ -98,8 +97,8 @@ namespace WebAPI_My_Home_Library.Services
 
                 if (novo)
                 {
-                    newUsuarioLivro.Guuid_Livro = newLivro.Guuid;
-                    newUsuarioLivro.Guuid_Usuario = filter.Guuid_Usuario;
+                    newUsuarioLivro.Ide_Livro = newLivro.Ide_Livro;
+                    newUsuarioLivro.Ide_Usuario = filter.Ide_Usuario;
 
                     _myHomeLibraryContext.Usuario_Livro.Add(newUsuarioLivro);
                     _myHomeLibraryContext.SaveChanges();
@@ -117,20 +116,20 @@ namespace WebAPI_My_Home_Library.Services
         #endregion
 
         #region LISTAR LIVROS POR USUÁRIO
-        public ResultModel<Livro> BuscarLivrosPorUsuario(string guidUsuario)
+        public ResultModel<Livro> BuscarLivrosPorUsuario(long ide_usuario)
         {
             ResultModel<Livro> data = new ResultModel<Livro>(true);
 
             try
             {
-                if (string.IsNullOrEmpty(guidUsuario)) throw new Exception("Campo guid do usuário é obrigatório!");
-                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Guuid_Usuario == guidUsuario).ToList();
+                if (ide_usuario <= 0) throw new Exception("Campo id do usuário é obrigatório!");
+                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Usuario == ide_usuario).ToList();
 
                 if (query != null)
                 {
                     foreach (var item in query)
                     {
-                        Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Guuid == item.Guuid_Livro).FirstOrDefault();
+                        Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == item.Ide_Livro).FirstOrDefault();
 
                         if(livroUsuario != null)
                         {
@@ -157,15 +156,15 @@ namespace WebAPI_My_Home_Library.Services
         }
         #endregion
 
-        #region BUSCAR LIVRO POR GUID
-        public ResultModel<Livro> BuscarPorGuid(string guidLivro)
+        #region BUSCAR LIVRO POR ID
+        public ResultModel<Livro> BuscarPorID(long ide_livro)
         {
             ResultModel<Livro> data = new ResultModel<Livro>(true);
 
             try
             {
-                if (string.IsNullOrEmpty(guidLivro)) throw new Exception("Campo guid do livro é obrigatório!");
-                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Guuid == guidLivro).FirstOrDefault();
+                if (ide_livro <= 0) throw new Exception("Campo id do livro é obrigatório!");
+                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
 
                 if (livroUsuario != null)
                 {
@@ -189,18 +188,18 @@ namespace WebAPI_My_Home_Library.Services
         #endregion
 
         #region EXCLUIR LIVRO
-        public ResultModel<string> Excluir(string guidLivro)
+        public ResultModel<string> Excluir(long ide_livro)
         {
             ResultModel<string> data = new ResultModel<string>(true);
 
             try
             {
-                if (string.IsNullOrEmpty(guidLivro)) throw new Exception("Campo guid do livro é obrigatório!");
-                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Guuid == guidLivro).FirstOrDefault();
+                if (ide_livro <= 0) throw new Exception("Campo id do livro é obrigatório!");
+                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
 
                 if (livroUsuario == null) throw new Exception("Livro não encontrado!");
 
-                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Guuid_Livro == livroUsuario.Guuid).FirstOrDefault();
+                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Livro == livroUsuario.Ide_Livro).FirstOrDefault();
 
                 _myHomeLibraryContext.Livro.Remove(livroUsuario);
                 _myHomeLibraryContext.SaveChanges();

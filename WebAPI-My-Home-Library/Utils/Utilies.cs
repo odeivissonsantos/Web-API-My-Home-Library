@@ -15,7 +15,7 @@ namespace WebAPI_My_Home_Library.Utils
 
         }
 
-        public bool VerificaSeExiste(int tipo, string parametro) //1 - Email; 2 - CPF; 3 - Guid
+        public bool VerificaSeExiste(int tipo, string parametro) //1 - Email; 2 - Ide
         {
 
             bool isExists = false;
@@ -28,13 +28,7 @@ namespace WebAPI_My_Home_Library.Utils
 
             if (tipo == 2)
             {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Cpf == parametro).FirstOrDefault();
-                if (query != null) isExists = true;
-            }
-
-            if (tipo == 3)
-            {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Guuid == parametro).FirstOrDefault();
+                var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == long.Parse(parametro)).FirstOrDefault();
                 if (query != null) isExists = true;
             }
 

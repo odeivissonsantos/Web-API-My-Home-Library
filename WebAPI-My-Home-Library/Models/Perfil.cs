@@ -21,7 +21,7 @@ namespace WebAPI_My_Home_Library.Models
         public string Descricao { get; set; }
 
         [Column("sts_exclusao")]
-        public bool Status_Exclusao { get; set; } = false;
+        public bool Status_Exclusao { get; set; }
 
     }
 }

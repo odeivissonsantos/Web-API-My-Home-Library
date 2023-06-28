@@ -9,6 +9,6 @@ namespace WebAPI_My_Home_Library.DTOs.Login
     {
         public string NomeUsuario { get; set; }
         public string Email { get; set; }
-        public string GuidUsuario { get; set; }
+        public long IdeUsuario { get; set; }
     }
 }

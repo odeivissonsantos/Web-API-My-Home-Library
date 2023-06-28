@@ -31,20 +31,19 @@ namespace WebAPI_My_Home_Library.Services
             bool novo = false;
             ResultModel<SalvarUsuarioRetornoDTO> data;
 
-            if (string.IsNullOrEmpty(filter.Guuid)) novo = true;
+            if (filter.Ide_Usuario <= 0) novo = true;
 
             try
             {
                 if (!novo)
                 {
-                    var query = _myHomeLibraryContext.Usuario.Where(x => x.Guuid == filter.Guuid).FirstOrDefault();
+                    var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
 
                     if (query == null) throw new Exception("Usuário não encontrado!");
 
                     query.Nome = filter.Nome;
                     query.Sobrenome = filter.Sobrenome;
                     query.Email = filter.Email;
-                    query.Cpf = filter.Cpf;
 
                     SalvarUsuarioRetornoDTO retorno = new SalvarUsuarioRetornoDTO()
                     {
@@ -60,18 +59,15 @@ namespace WebAPI_My_Home_Library.Services
                 else
                 {
                     bool isExistsEmail = _utilies.VerificaSeExiste(1, filter.Email);
-                    bool isExistsCpf = _utilies.VerificaSeExiste(2, filter.Cpf);
 
-                    if (isExistsEmail || isExistsCpf) throw new Exception("Usuário já cadastrado com esse Email/Cpf!");
+                    if (isExistsEmail) throw new Exception("Usuário já cadastrado com esse Email");
 
                     Usuario newUsuario = new Usuario()
                     {
-                        Cpf = filter.Cpf,
-                        Email = filter.Email,
-                        Senha = filter.Senha,
                         Nome = filter.Nome,
                         Sobrenome = filter.Sobrenome,
-                        Guuid = Guid.NewGuid().ToString()
+                        Email = filter.Email,
+                        Senha = filter.Senha
                     };
 
                     _myHomeLibraryContext.Add(newUsuario);

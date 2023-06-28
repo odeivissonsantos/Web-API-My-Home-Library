@@ -10,10 +10,13 @@ namespace WebAPI_My_Home_Library.Models
     {
         [Key]
         [Column("ide_usuario")]
-        public int Ide_Usuario { get; set; }
+        public long Ide_Usuario { get; set; }
 
-        [Column("guid")]
-        public string Guuid { get; set; }
+        [Column("nome")]
+        public string Nome { get; set; }
+
+        [Column("sobrenome")]
+        public string Sobrenome { get; set; }
 
         [Column("email")]
         public string Email { get; set; }
@@ -30,9 +33,6 @@ namespace WebAPI_My_Home_Library.Models
         [Column("token")]
         public string Token { get; set; }
 
-        [Column("cpf")]
-        public string Cpf { get; set; }
-
         [Column("qtd_acessos")]
         public int? Quanidade_Acessos { get; set; } = 0;
 
@@ -41,11 +41,5 @@ namespace WebAPI_My_Home_Library.Models
 
         [Column("ide_perfil")]
         public int Ide_Perfil { get; set; } = EnumCommon.PerfilEnum.Padrao.GetHashCode();
-
-        [Column("nome")]
-        public string Nome { get; set; }
-
-        [Column("sobrenome")]
-        public string Sobrenome { get; set; }
     }
 }

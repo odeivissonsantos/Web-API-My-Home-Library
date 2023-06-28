@@ -12,10 +12,7 @@ namespace WebAPI_My_Home_Library.Models
     {
         [Key]
         [Column("ide_livro")]
-        public int Ide_Livro { get; set; }
-
-        [Column("guid")]
-        public string Guuid { get; set; }
+        public long Ide_Livro { get; set; }
 
         [Column("autor")]
         public string Autor { get; set; }
@@ -27,7 +24,7 @@ namespace WebAPI_My_Home_Library.Models
         public string Editora { get; set; }
 
         [Column("codigo_barras")]
-        public int? Codigo_Barras { get; set; }
+        public long? Codigo_Barras { get; set; }
 
         [Column("url_capa")]
         public string Url_Capa { get; set; }
