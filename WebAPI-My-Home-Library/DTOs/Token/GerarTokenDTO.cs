@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebAPI_My_Home_Library.Filters
+namespace WebAPI_My_Home_Library.DTOs.Login
 {
-    public class LoginFilter
+    public class GerarTokenDTO
     {
-        public string Email { get; set; }
-        public string Senha { get; set; }
         public string Token { get; set; }
+        public DateTime DataExpiracaoToken { get; set; }
     }
 }

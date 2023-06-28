@@ -14,9 +14,11 @@ namespace WebAPI_My_Home_Library.Services
         public static bool isDesenv = Settings.IsDesenv;
 
         private readonly MyHomeLibraryContext _myHomeLibraryContext;
-        public LoginBusiness(MyHomeLibraryContext myHomeLibraryContext)
+        private readonly Utilies _utilies;
+        public LoginBusiness(MyHomeLibraryContext myHomeLibraryContext, Utilies utilies)
         {
             _myHomeLibraryContext = myHomeLibraryContext;
+            _utilies = utilies;
 
         }
 
@@ -31,20 +33,27 @@ namespace WebAPI_My_Home_Library.Services
 
                 if (query != null)
                 {
-                    if (query.Senha != filter.Senha) throw new Exception("Email/Senha inválido, verifique os dados e tente novamente!");
+                    string senhaEncryptada = Utilies.SHA512(filter.Senha);
+                    if (query.Senha != senhaEncryptada) throw new Exception("Email/Senha inválido, verifique os dados e tente novamente!");
+                    if (query.Status_Exclusao) throw new Exception("Este usuário não tem mais acesso ao sistema.");
+
+                    query.Data_Ultimo_Acesso = DateTime.Now;
+                    query.Quanidade_Acessos += 1;
+
+                    GerarTokenDTO tokenDTO = Utilies.GerarToken();
+                    query.Token = tokenDTO.Token;
+                    query.Data_Expiracao_Token = tokenDTO.DataExpiracaoToken;
+
+                    _myHomeLibraryContext.Update(query);
+                    _myHomeLibraryContext.SaveChanges();
 
                     LoginRetornoDTO retorno = new LoginRetornoDTO()
                     {
                         NomeUsuario = query.Nome,
                         Email = query.Email,
-                        IdeUsuario = query.Ide_Usuario
+                        IdeUsuario = query.Ide_Usuario,
+                        Token = query.Token
                     };
-
-                    query.Data_Ultimo_Acesso = DateTime.Now;
-                    query.Quanidade_Acessos += 1;
-
-                    _myHomeLibraryContext.Update(query);
-                    _myHomeLibraryContext.SaveChanges();
 
                     data = new ResultModel<LoginRetornoDTO>(true);
                     data.Items.Add(retorno);
@@ -67,6 +76,95 @@ namespace WebAPI_My_Home_Library.Services
 
             return data;
         }
+        #endregion
+
+        #region CADASTRO DE NOVOS USUÁRIOS
+
+        public ResultModel<CadastrarUsuarioRetornoDTO> CadastrarNovoUsuario(NovoUsuarioFilter filter)
+        {
+            ResultModel<CadastrarUsuarioRetornoDTO> data;
+
+            try
+            {
+                bool isExistsEmail = _utilies.VerificaSeExiste(1, filter.Email);
+
+                if (isExistsEmail) throw new Exception("Já existe um usuário cadastrado com esse Email, mude o email ou solicite recuperação de senha.");
+                if (filter.Senha != filter.ConfirmacaoSenha) throw new Exception("Senha e Confirmação de Senha não coincidem, tente novamente.");
+
+                string senhaEncryptada = Utilies.SHA512(filter.Senha);
+
+                Usuario newUsuario = new Usuario()
+                {
+                    Nome = filter.Nome,
+                    Sobrenome = filter.Sobrenome,
+                    Email = filter.Email,
+                    Senha = senhaEncryptada
+                };
+
+                _myHomeLibraryContext.Add(newUsuario);
+                _myHomeLibraryContext.SaveChanges();
+
+                CadastrarUsuarioRetornoDTO retorno = new CadastrarUsuarioRetornoDTO()
+                {
+                    Mensagem = "Usuário cadastrado com sucesso!",
+                };
+
+                data = new ResultModel<CadastrarUsuarioRetornoDTO>(true);
+                data.Items.Add(retorno);
+
+            }
+            catch (Exception ex)
+            {
+                data = new ResultModel<CadastrarUsuarioRetornoDTO>(false);
+                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
+
+            }
+
+            return data;
+        }
+
+        #endregion
+
+        #region VALIDAR TOKEN
+
+        public ResultModel<bool> ValidarToken(LoginFilter filter)
+        {
+            ResultModel<bool> data;
+            bool tokenValido = false;
+
+            try
+            {               
+                var usuario = _myHomeLibraryContext.Usuario.Where(x => x.Token == filter.Token).FirstOrDefault();
+
+                if (usuario != null)
+                {
+                    if (usuario.Data_Expiracao_Token < DateTime.Now) throw new Exception("Token Expirado.");
+
+                    data = new ResultModel<bool>(true);                   
+                    data.AddMessage("Token válido");
+                    tokenValido = true;
+                    data.Items.Add(tokenValido);
+                }
+                else
+                {
+                    data = new ResultModel<bool>(false);
+                    data.Pages = null;
+                    data.AddMessage("Token Invalido.");
+                }
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                data = new ResultModel<bool>(false);
+                data.Pages = null;
+                data.Items.Add(tokenValido);
+                data.AddMessage(ex.Message);
+
+                return data;
+            }        
+        }
+
         #endregion
 
     }

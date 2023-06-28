@@ -26,10 +26,10 @@ namespace WebAPI_My_Home_Library.Services
 
         #region SALVAR USUÁRIO
 
-        public ResultModel<SalvarUsuarioRetornoDTO> Salvar(SalvarUsuarioFilter filter)
+        public ResultModel<CadastrarUsuarioRetornoDTO> Salvar(SalvarUsuarioFilter filter)
         {
             bool novo = false;
-            ResultModel<SalvarUsuarioRetornoDTO> data;
+            ResultModel<CadastrarUsuarioRetornoDTO> data;
 
             if (filter.Ide_Usuario <= 0) novo = true;
 
@@ -45,14 +45,14 @@ namespace WebAPI_My_Home_Library.Services
                     query.Sobrenome = filter.Sobrenome;
                     query.Email = filter.Email;
 
-                    SalvarUsuarioRetornoDTO retorno = new SalvarUsuarioRetornoDTO()
+                    CadastrarUsuarioRetornoDTO retorno = new CadastrarUsuarioRetornoDTO()
                     {
                         Mensagem = "Usuário atualizado com sucesso",
                     };
 
                     _myHomeLibraryContext.Update(query);
 
-                    data = new ResultModel<SalvarUsuarioRetornoDTO>(true);
+                    data = new ResultModel<CadastrarUsuarioRetornoDTO>(true);
                     data.Items.Add(retorno);
 
                 }
@@ -72,12 +72,12 @@ namespace WebAPI_My_Home_Library.Services
 
                     _myHomeLibraryContext.Add(newUsuario);
 
-                    SalvarUsuarioRetornoDTO retorno = new SalvarUsuarioRetornoDTO()
+                    CadastrarUsuarioRetornoDTO retorno = new CadastrarUsuarioRetornoDTO()
                     {
                         Mensagem = "Usuário cadastrado com sucesso!",
                     };
 
-                    data = new ResultModel<SalvarUsuarioRetornoDTO>(true);
+                    data = new ResultModel<CadastrarUsuarioRetornoDTO>(true);
                     data.Items.Add(retorno);
 
                 }
@@ -87,7 +87,7 @@ namespace WebAPI_My_Home_Library.Services
             }
             catch (Exception ex)
             {
-                data = new ResultModel<SalvarUsuarioRetornoDTO>(false);
+                data = new ResultModel<CadastrarUsuarioRetornoDTO>(false);
                 data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
 
             }

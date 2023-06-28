@@ -16,10 +16,12 @@ namespace WebAPI_My_Home_Library.Controllers.api
     public class LivroController : ControllerBase
     {
         private readonly LivroBusiness _livroBusiness;
+        private readonly LoginBusiness _loginBusiness;
 
-        public LivroController(LivroBusiness livroBusiness)
+        public LivroController(LivroBusiness livroBusiness, LoginBusiness loginBusiness)
         {
             _livroBusiness = livroBusiness;
+            _loginBusiness = loginBusiness;
         }
 
         [HttpPost]
@@ -32,24 +34,41 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
         [HttpGet]
         [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
-        public ResultModel<Livro> BuscarLivrosPorUsuario(long ide_usuario)
+        public ResultModel<Livro> BuscarLivrosPorUsuario([FromHeader(Name = "token")] string token, long ide_usuario)
         {
-            var retorno = _livroBusiness.BuscarLivrosPorUsuario(ide_usuario);
-            return retorno;
+            ResultModel<Livro> data = new();
+
+            var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
+
+            if(tokenValido.IsOk)
+            {
+                data = _livroBusiness.BuscarLivrosPorUsuario(ide_usuario);
+            }
+            else
+            {
+                data = new ResultModel<Livro>(false);
+                data.Messages = tokenValido.Messages;
+            }
+            
+            return data;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(ResultModel<Livro>), 200)]
-        public ResultModel<Livro> BuscarPorID(long ide_livro)
+        public ResultModel<Livro> BuscarPorID([FromHeader(Name = "token")] string token, long ide_livro)
         {
+            var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
+
             var retorno = _livroBusiness.BuscarPorID(ide_livro);
             return retorno;
         }
 
         [HttpDelete]
         [ProducesResponseType(typeof(ResultModel<string>), 200)]
-        public ResultModel<string> Excluir(long ide_livro)
+        public ResultModel<string> Excluir([FromHeader(Name = "token")] string token, long ide_livro)
         {
+            var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
+
             var retorno = _livroBusiness.Excluir(ide_livro);
             return retorno;
         }

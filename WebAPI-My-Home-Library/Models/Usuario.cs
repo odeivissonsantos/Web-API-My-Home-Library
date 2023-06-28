@@ -30,16 +30,19 @@ namespace WebAPI_My_Home_Library.Models
         [Column("sts_exclusao")]
         public bool Status_Exclusao { get; set; } = false;
 
-        [Column("token")]
-        public string Token { get; set; }
-
         [Column("qtd_acessos")]
-        public int? Quanidade_Acessos { get; set; } = 0;
+        public long? Quanidade_Acessos { get; set; } = 0;
 
         [Column("dtc_ultimo_acesso")]
         public DateTime? Data_Ultimo_Acesso { get; set; }
 
         [Column("ide_perfil")]
         public int Ide_Perfil { get; set; } = EnumCommon.PerfilEnum.Padrao.GetHashCode();
+
+        [Column("token")]
+        public string Token { get; set; }
+
+        [Column("dtc_exp_token")]
+        public DateTime? Data_Expiracao_Token { get; set; }
     }
 }

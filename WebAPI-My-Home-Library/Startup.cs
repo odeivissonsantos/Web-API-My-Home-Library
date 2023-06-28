@@ -50,7 +50,7 @@ namespace WebAPI_My_Home_Library
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
 
-            Settings.IsDesenv = Configuration["Ambiente"] == "1"; // 1 - Desenvolvimento e 2 - Produção;
+            Settings.IsDesenv = Configuration["Ambiente"] == "2"; // 1 - Produção; 2 - Desenvolvimento;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,6 +13,7 @@ CREATE TABLE [usuario] (
 	dtc_ultimo_acesso datetime NULL,
 	ide_perfil int NOT NULL,
 	token varchar(max) NULL,
+	dtc_exp_token datetime NULL,
   CONSTRAINT [PK_USUARIO] PRIMARY KEY CLUSTERED
   (
   [ide_usuario] ASC

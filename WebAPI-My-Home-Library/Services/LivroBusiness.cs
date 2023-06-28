@@ -125,7 +125,7 @@ namespace WebAPI_My_Home_Library.Services
                 if (ide_usuario <= 0) throw new Exception("Campo id do usuário é obrigatório!");
                 var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Usuario == ide_usuario).ToList();
 
-                if (query != null)
+                if (query.Any())
                 {
                     foreach (var item in query)
                     {
