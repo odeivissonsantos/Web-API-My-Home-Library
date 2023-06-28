@@ -30,7 +30,6 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
         [HttpPost]
         [ProducesResponseType(typeof(ResultModel<CadastrarUsuarioRetornoDTO>), 201)]
-        [ProducesResponseType(typeof(ResultModel<CadastrarUsuarioRetornoDTO>), 400)]
         public ResultModel<CadastrarUsuarioRetornoDTO> CadastrarNovoUsuario(NovoUsuarioFilter filter)
         {
             var retorno = _loginBusiness.CadastrarNovoUsuario(filter);

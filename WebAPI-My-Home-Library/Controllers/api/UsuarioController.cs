@@ -24,7 +24,6 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
         [HttpPost]
         [ProducesResponseType(typeof(ResultModel<CadastrarUsuarioRetornoDTO>), 201)]
-        [ProducesResponseType(typeof(ResultModel<CadastrarUsuarioRetornoDTO>), 400)]
         public ResultModel<CadastrarUsuarioRetornoDTO> Salvar(SalvarUsuarioFilter filter)
         {
             var retorno = _usuarioBusiness.Salvar(filter);
