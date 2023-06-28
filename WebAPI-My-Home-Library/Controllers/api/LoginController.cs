@@ -13,13 +13,10 @@ namespace WebAPI_My_Home_Library.Controllers.api
     [ApiController]
     public class LoginController : ControllerBase
     {
-
-        private readonly ILogger<LoginController> _logger;
         private readonly LoginBusiness _loginBusiness;
 
-        public LoginController(ILogger<LoginController> logger, LoginBusiness loginBusiness)
+        public LoginController(LoginBusiness loginBusiness)
         {
-            _logger = logger;
             _loginBusiness = loginBusiness;
         }
 

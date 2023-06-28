@@ -15,13 +15,10 @@ namespace WebAPI_My_Home_Library.Controllers.api
     [ApiController]
     public class LivroController : ControllerBase
     {
-
-        private readonly ILogger<LivroController> _logger;
         private readonly LivroBusiness _livroBusiness;
 
-        public LivroController(ILogger<LivroController> logger, LivroBusiness livroBusiness)
+        public LivroController(LivroBusiness livroBusiness)
         {
-            _logger = logger;
             _livroBusiness = livroBusiness;
         }
 

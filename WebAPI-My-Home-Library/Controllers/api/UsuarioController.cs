@@ -15,17 +15,16 @@ namespace WebAPI_My_Home_Library.Controllers.api
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly ILogger<UsuarioController> _logger;
         private readonly UsuarioBusiness _usuarioBusiness;
 
-        public UsuarioController(ILogger<UsuarioController> logger, UsuarioBusiness usuarioBusiness)
+        public UsuarioController( UsuarioBusiness usuarioBusiness)
         {
-            _logger = logger;
             _usuarioBusiness = usuarioBusiness;
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ResultModel<SalvarUsuarioRetornoDTO>), 200)]
+        [ProducesResponseType(typeof(ResultModel<SalvarUsuarioRetornoDTO>), 201)]
+        [ProducesResponseType(typeof(ResultModel<SalvarUsuarioRetornoDTO>), 400)]
         public ResultModel<SalvarUsuarioRetornoDTO> Salvar(SalvarUsuarioFilter filter)
         {
             var retorno = _usuarioBusiness.Salvar(filter);
