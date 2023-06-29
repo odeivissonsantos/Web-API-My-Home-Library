@@ -21,9 +21,9 @@ namespace WebAPI_My_Home_Library
 
                 c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
-                    Title = "MyHomeLibrary",
+                    Title = "Endpoints WEB API My Home Library",
                     Version = "v1",
-                    Description = "Endpoints My Home Library - Versão 1.0.0.1.",
+                    Description = "Versão 1.0.0.1.",
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

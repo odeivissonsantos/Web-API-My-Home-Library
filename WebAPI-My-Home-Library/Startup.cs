@@ -46,11 +46,18 @@ namespace WebAPI_My_Home_Library
                 .AllowAnyHeader());
             });
 
+            services.AddSwaggerDocumentation();
+
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI - My Home Library - Versão 1.0.0.1", Version = "v1" });
-            });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo
+            //    {
+            //        Title = "Web API - My Home Library",
+            //        Version = "v1",
+            //        Description = "Versão 1.0.0.1",
+            //    });
+            //});
 
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
