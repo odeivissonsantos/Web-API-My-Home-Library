@@ -42,9 +42,7 @@ namespace WebAPI_My_Home_Library.DTOs.Livro
             Titulo = item.Titulo;
             Observacao = item.Observacao;
             Ide_Usuario = itemUsuario.Ide_Usuario;
-            IsOk = true;
             MensagemRetorno = "Livro encontrado com sucesso.";
-
         }
     }
 }

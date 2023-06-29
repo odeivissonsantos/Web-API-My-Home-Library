@@ -13,6 +13,8 @@ namespace WebAPI_My_Home_Library.Context
         public DbSet<Perfil> Perfil { get; set; }
         public DbSet<Livro> Livro { get; set; }
         public DbSet<UsuarioLivro> Usuario_Livro { get; set; }
+        public DbSet<UsuarioAcessos> Usuario_Acessos { get; set; }
+        public DbSet<UsuarioToken> Usuario_Token { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

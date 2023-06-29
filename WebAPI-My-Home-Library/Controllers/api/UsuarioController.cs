@@ -28,7 +28,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult AlterarDados([FromHeader(Name = "token")] string token, AlterarUsuarioFilter filter)
         {
-            CriticaDTO retorno = new CriticaDTO();
+            CriticaDTO retorno = new();
 
             try
             {
@@ -42,8 +42,10 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
                 if (tokenValido.IsOk)
                 {
-                    retorno = _usuarioBusiness.AlterarDados(filter);
-                    return retorno.IsOk? Ok(retorno) : BadRequest(retorno);
+                    _usuarioBusiness.AlterarDados(filter);
+                    retorno = new CriticaDTO { IsOk = true, MensagemRetorno = "Usuário atualizado com sucesso." };
+
+                    return Ok(retorno);
                 }
                 else
                 {
@@ -65,7 +67,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult AlterarSenha([FromHeader(Name = "token")] string token, AlterarSenhaFilter filter)
         {
-            CriticaDTO retorno = new CriticaDTO();
+            CriticaDTO retorno = new();
 
             try
             {
@@ -74,11 +76,6 @@ namespace WebAPI_My_Home_Library.Controllers.api
                 if (string.IsNullOrEmpty(filter.SenhaAtual)) throw new Exception("Campo Senha Atual é obrigatório.");
                 if (string.IsNullOrEmpty(filter.NovaSenha)) throw new Exception("Campo Nova Senha é obrigatório.");
                 if (string.IsNullOrEmpty(filter.ConfirmacaoNovaSenha)) throw new Exception("Campo Confirmacao de Nova Senha é obrigatório.");
-
-                bool isExistsEmail = _utilies.VerificaSeExiste(2, filter.Ide_Usuario.ToString());
-
-                if (!isExistsEmail) throw new Exception($"Não foi possível encontrar um usuário com o ID [{filter.Ide_Usuario}].");
-
                 if (filter.NovaSenha != filter.ConfirmacaoNovaSenha) throw new Exception("Nova Senha e Confirmação de Senha não coincidem, tente novamente.");
 
                 filter.SenhaAtual = Utilies.SHA512(filter.SenhaAtual);
@@ -88,8 +85,10 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
                 if (tokenValido.IsOk)
                 {
-                    retorno = _usuarioBusiness.AlterarSenha(filter);
-                    return retorno.IsOk ? Ok(retorno) : BadRequest(retorno);
+                    _usuarioBusiness.AlterarSenha(filter);
+                    retorno = new CriticaDTO { IsOk = true, MensagemRetorno = "Senha atualizada com sucesso." };
+
+                    return Ok(retorno);
                 }
                 else
                 {

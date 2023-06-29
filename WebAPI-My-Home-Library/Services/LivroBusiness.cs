@@ -26,79 +26,50 @@ namespace WebAPI_My_Home_Library.Services
         }
 
         #region SALVAR LIVRO
-        public NovoLivroRetornoDTO Novo(NovoLivroFilter filter)
+        public void Novo(NovoLivroFilter filter)
         {
-            Livro newLivro = new Livro();
-            UsuarioLivro newUsuarioLivro = new UsuarioLivro();
-            NovoLivroRetornoDTO retorno = new NovoLivroRetornoDTO();
-
-            try
+            Livro newLivro = new()
             {
-                bool isExistsUsuario = _utilies.VerificaSeExiste(2, filter.Ide_Usuario.ToString());
-                if (!isExistsUsuario) throw new Exception("Usuário não encontrado, digite um usuário válido");
+                Ano = filter.Ano,
+                Autor = filter.Autor,
+                Codigo_Barras = filter.CodigoBarras,
+                Editora = filter.Editora,
+                Titulo = filter.Titulo,
+                Observacao = filter.Observacao,
+                Url_Capa = filter.UrlCapa,
+            };
 
-                newLivro.Ano = filter.Ano;
-                newLivro.Autor = filter.Autor;
-                newLivro.Codigo_Barras = filter.CodigoBarras;
-                newLivro.Editora = filter.Editora;
-                newLivro.Titulo = filter.Titulo;
-                newLivro.Observacao = filter.Observacao;
-                newLivro.Url_Capa = filter.UrlCapa;
+            _myHomeLibraryContext.Livro.Add(newLivro);
+            _myHomeLibraryContext.SaveChanges();
 
-                _myHomeLibraryContext.Livro.Add(newLivro);
-                _myHomeLibraryContext.SaveChanges();
-
-                newUsuarioLivro.Ide_Livro = newLivro.Ide_Livro;
-                newUsuarioLivro.Ide_Usuario = filter.Ide_Usuario;
-                
-                _myHomeLibraryContext.Usuario_Livro.Add(newUsuarioLivro);
-                _myHomeLibraryContext.SaveChanges();
-
-                retorno = new(newLivro);
-
-            }
-            catch (Exception ex)
+            UsuarioLivro newUsuarioLivro = new()
             {
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = ex.Message;
-            }
+                Ide_Livro = newLivro.Ide_Livro,
+                Ide_Usuario = filter.Ide_Usuario,
+            };
 
-            return retorno;
+            _myHomeLibraryContext.Usuario_Livro.Add(newUsuarioLivro);
+            _myHomeLibraryContext.SaveChanges();
         }
         #endregion
 
         #region EDITAR LIVRO
-        public CriticaDTO Editar(EditarLivroFilter filter)
+        public void Editar(EditarLivroFilter filter)
         {
-            CriticaDTO retorno = new CriticaDTO();
+            var query = BuscarDadosLivro(filter.Ide_Livro);
 
-            try
-            {
-                var query = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == filter.Ide_Livro).FirstOrDefault();
+            if (query == null) throw new Exception($"Não foi possível encontrar um livro com o ID [{filter.Ide_Livro}].");
 
-                if (query == null) throw new Exception("Livro não encontrado!");
+            query.Ano = filter.Ano;
+            query.Autor = filter.Autor;
+            query.Codigo_Barras = filter.CodigoBarras;
+            query.Editora = filter.Editora;
+            query.Titulo = filter.Titulo;
+            query.Observacao = filter.Observacao;
+            query.Url_Capa = filter.UrlCapa;
 
-                query.Ano = filter.Ano;
-                query.Autor = filter.Autor;
-                query.Codigo_Barras = filter.CodigoBarras;
-                query.Editora = filter.Editora;
-                query.Titulo = filter.Titulo;
-                query.Observacao = filter.Observacao;
-                query.Url_Capa = filter.UrlCapa;
-
-                _myHomeLibraryContext.Livro.Update(query);
-                _myHomeLibraryContext.SaveChanges();
-
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = "Livro atualizado com sucesso";         
-            }
-            catch (Exception ex)
-            {
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = ex.Message;
-            }
-
-            return retorno;
+            _myHomeLibraryContext.Livro.Update(query);
+            _myHomeLibraryContext.SaveChanges();
         }
         #endregion
 
@@ -114,7 +85,7 @@ namespace WebAPI_My_Home_Library.Services
             {
                 foreach (var item in query)
                 {
-                    Livro livro = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == item.Ide_Livro).FirstOrDefault();
+                    Livro livro = BuscarDadosLivro(item.Ide_Livro);
 
                     if (livro != null)
                     {
@@ -131,61 +102,38 @@ namespace WebAPI_My_Home_Library.Services
         #region BUSCAR LIVRO POR ID
         public LivroDTO BuscarPorID(long ide_livro)
         {
-            LivroDTO retorno = new LivroDTO();
+            LivroDTO livro = new LivroDTO();
 
-            try
-            {
-                Livro livro = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
+            var query = BuscarDadosLivro(ide_livro);
+            if (query == null) throw new Exception($"Não foi possível encontrar um livro com o ID [{ide_livro}].");
 
-                if (livro != null)
-                {
-                    var usuarioLivro = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Livro == livro.Ide_Livro).FirstOrDefault();
+            var usuarioLivro = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Livro == query.Ide_Livro).FirstOrDefault();
+            livro = new(query, usuarioLivro);
+            livro.IsOk = true;
 
-                    retorno = new(livro, usuarioLivro);
-                }
-                else
-                {
-                    retorno.IsOk = false;
-                    retorno.MensagemRetorno = $"O livro com o ID [{ide_livro}] não foi encontrado.";
-                }
-            }
-            catch (Exception ex)
-            {
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = ex.Message;
-            }
-
-            return retorno;
+            return livro;            
         }
         #endregion
 
         #region EXCLUIR LIVRO
-        public CriticaDTO Excluir(long ide_livro)
+        public void Excluir(long ide_livro)
         {
-            CriticaDTO retorno = new CriticaDTO();
+            Livro livroUsuario = BuscarDadosLivro(ide_livro);
 
-            try
-            {
-                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
+            if (livroUsuario == null) throw new Exception($"Não foi possível encontrar um livro com o ID [{ide_livro}].");
 
-                if (livroUsuario == null) throw new Exception("Livro não encontrado!");
+            var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Livro == livroUsuario.Ide_Livro).FirstOrDefault();
 
-                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Livro == livroUsuario.Ide_Livro).FirstOrDefault();
+            _myHomeLibraryContext.Livro.Remove(livroUsuario);
+            _myHomeLibraryContext.Usuario_Livro.Remove(query);
+            _myHomeLibraryContext.SaveChanges();
+        }
+        #endregion
 
-                _myHomeLibraryContext.Livro.Remove(livroUsuario);
-                _myHomeLibraryContext.Usuario_Livro.Remove(query);
-                _myHomeLibraryContext.SaveChanges();
-
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = "Livro excluído com sucesso!";
-            }
-            catch (Exception ex)
-            {
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = ex.Message;
-            }
-
-            return retorno;
+        #region UTILS
+        private Livro BuscarDadosLivro(long ide_livro)
+        {
+            return _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
         }
         #endregion
 

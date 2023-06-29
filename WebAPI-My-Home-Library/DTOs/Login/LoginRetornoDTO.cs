@@ -19,14 +19,13 @@ namespace WebAPI_My_Home_Library.DTOs.Login
         
         }
 
-        public LoginRetornoDTO(Models.Usuario item)
+        public LoginRetornoDTO(Models.Usuario item, Models.UsuarioToken token)
         {
             IdeUsuario = item.Ide_Usuario;
             NomeUsuario = item.Nome;
             SobrenomeUsuario = item.Sobrenome;
             Email = item.Email;
-            Token = item.Token;
-            IsOk = true;
+            Token = token.Token;
             MensagemRetorno = "Login efetuado com sucesso";
         }
     }

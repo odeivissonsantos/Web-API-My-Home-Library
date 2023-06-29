@@ -22,69 +22,35 @@ namespace WebAPI_My_Home_Library.Services
 
         #region SALVAR USUÁRIO
 
-        public CriticaDTO AlterarDados(AlterarUsuarioFilter filter)
+        public void AlterarDados(AlterarUsuarioFilter filter)
         {
+            var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
 
-            CriticaDTO retorno = new CriticaDTO();
+            if (query == null) throw new Exception($"Não foi possível encontrar um usuário com o ID [{filter.Ide_Usuario}].");
 
-            try
-            {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
+            query.Nome = filter.Nome;
+            query.Sobrenome = filter.Sobrenome;
+            query.Email = filter.Email;
 
-                if (query == null) throw new Exception("Usuário não encontrado!");
-
-                query.Nome = filter.Nome;
-                query.Sobrenome = filter.Sobrenome;
-                query.Email = filter.Email;
-
-                _myHomeLibraryContext.Update(query);
-                _myHomeLibraryContext.SaveChanges();
-
-                retorno.IsOk = true;
-                retorno.MensagemRetorno = "Usuário atualizado com sucesso";
- 
-            }
-            catch (Exception ex)
-            {
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = ex.Message;
-            }
-
-            return retorno;
+            _myHomeLibraryContext.Update(query);
+            _myHomeLibraryContext.SaveChanges();
         }
 
         #endregion
 
         #region ALTERAR SENHA
 
-        public CriticaDTO AlterarSenha(AlterarSenhaFilter filter)
+        public void AlterarSenha(AlterarSenhaFilter filter)
         {
+            var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
 
-            CriticaDTO retorno = new CriticaDTO();
+            if (query == null) throw new Exception($"Não foi possível encontrar um usuário com o ID [{filter.Ide_Usuario}].");
+            if (query.Senha != filter.SenhaAtual) throw new Exception("Senha Atual não coincide a Senha Cadastrada, verifique os dados e tente novamente.");
 
-            try
-            {
-                var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
+            query.Senha = filter.NovaSenha;
 
-                if (query == null) throw new Exception("Usuário não encontrado!");
-                if (query.Senha != filter.SenhaAtual) throw new Exception("Senha Atual não coincide a Senha Cadastrada, verifique os dados e tente novamente.");
-
-                query.Senha = filter.NovaSenha;
-
-                _myHomeLibraryContext.Update(query);
-                _myHomeLibraryContext.SaveChanges();
-
-                retorno.IsOk = true;
-                retorno.MensagemRetorno = "Senha atualizada com sucesso";
-
-            }
-            catch (Exception ex)
-            {
-                retorno.IsOk = false;
-                retorno.MensagemRetorno = ex.Message;
-            }
-
-            return retorno;
+            _myHomeLibraryContext.Update(query);
+            _myHomeLibraryContext.SaveChanges();
         }
 
         #endregion

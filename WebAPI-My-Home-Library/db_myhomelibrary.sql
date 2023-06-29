@@ -9,11 +9,7 @@ CREATE TABLE [usuario] (
 	senha varchar(max) NOT NULL,
 	dtc_inclusao datetime NOT NULL,
 	sts_exclusao bit NOT NULL,
-	qtd_acessos bigint NULL,
-	dtc_ultimo_acesso datetime NULL,
 	ide_perfil int NOT NULL,
-	token varchar(max) NULL,
-	dtc_exp_token datetime NULL,
   CONSTRAINT [PK_USUARIO] PRIMARY KEY CLUSTERED
   (
   [ide_usuario] ASC
@@ -63,6 +59,32 @@ CREATE TABLE [usuario_livro] (
 )
 GO
 
+CREATE TABLE [usuario_token] (
+	ide_usuario_token bigint IDENTITY(1,1) NOT NULL,
+	ide_usuario bigint NOT NULL,
+	token varchar(max) NULL,
+	dtc_exp_token datetime NULL,
+  CONSTRAINT [PK_USUARIO_TOKEN] PRIMARY KEY CLUSTERED
+  (
+  ide_usuario_token ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+
+CREATE TABLE [usuario_acessos] (
+	ide_usuario_acessos bigint IDENTITY(1,1) NOT NULL,
+	ide_usuario bigint NOT NULL,
+	qtd_acessos bigint NULL,
+	dtc_ultimo_acesso datetime NULL,
+  CONSTRAINT [PK_USUARIO_ACESSOS] PRIMARY KEY CLUSTERED
+  (
+  ide_usuario_acessos ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+
 ALTER TABLE [usuario] WITH CHECK ADD CONSTRAINT [usuario_fk0] FOREIGN KEY ([ide_perfil]) REFERENCES [perfil]([ide_perfil])
 ON UPDATE CASCADE
 GO
@@ -75,7 +97,14 @@ VALUES
 ('Administrador', 'Administrador', 0),
 ('Padrão', 'Usuário Padrão', 0)
 
-INSERT INTO usuario(nome, sobrenome, email, senha, dtc_inclusao, sts_exclusao, qtd_acessos, ide_perfil)
+INSERT INTO usuario(nome, sobrenome, email, senha, dtc_inclusao, sts_exclusao, ide_perfil)
 VALUES
-('Deivisson', 'Santos', 'deivisson.santos@detran.ba.gov.br', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413',  GETDATE(), 0, 0, 1)
+('Deivisson', 'Santos', 'deivisson.santos@detran.ba.gov.br', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413',  GETDATE(), 0, 1)
 
+INSERT INTO usuario_token(ide_usuario)
+VALUES
+(1)
+
+INSERT INTO usuario_acessos(ide_usuario, qtd_acessos)
+VALUES
+(1, 0)

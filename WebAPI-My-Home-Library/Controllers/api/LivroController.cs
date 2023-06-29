@@ -10,6 +10,7 @@ using WebAPI_My_Home_Library.DTOs.Livro;
 using WebAPI_My_Home_Library.Filters;
 using WebAPI_My_Home_Library.Models;
 using WebAPI_My_Home_Library.Services;
+using WebAPI_My_Home_Library.Utils;
 using static WebAPI_My_Home_Library.Enums.EnumCommon;
 
 namespace WebAPI_My_Home_Library.Controllers.api
@@ -20,19 +21,21 @@ namespace WebAPI_My_Home_Library.Controllers.api
     {
         private readonly LivroBusiness _livroBusiness;
         private readonly LoginBusiness _loginBusiness;
+        private readonly Utilies _utilies;
 
-        public LivroController(LivroBusiness livroBusiness, LoginBusiness loginBusiness)
+        public LivroController(LivroBusiness livroBusiness, LoginBusiness loginBusiness, Utilies utilies)
         {
             _livroBusiness = livroBusiness;
             _loginBusiness = loginBusiness;
+            _utilies = utilies;
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(NovoLivroRetornoDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CriticaDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Novo([FromHeader(Name = "token")] string token, NovoLivroFilter filter)
         {
-            CriticaDTO retorno = new CriticaDTO();
+            CriticaDTO retorno = new();
 
             try
             {
@@ -41,12 +44,17 @@ namespace WebAPI_My_Home_Library.Controllers.api
                 if (string.IsNullOrEmpty(filter.Editora)) throw new Exception("Campo editora é obrigatório!");
                 if (string.IsNullOrEmpty(filter.Titulo)) throw new Exception("Campo título é obrigatório!");
 
+                bool isExistsUsuario = _utilies.VerificaSeExiste(2, filter.Ide_Usuario.ToString());
+                if (!isExistsUsuario) throw new Exception($"Não foi possível encontrar um usuário com o ID [{filter.Ide_Usuario}].");
+
                 var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
 
                 if (tokenValido.IsOk)
                 {
-                    retorno = _livroBusiness.Novo(filter);
-                    return retorno.IsOk ? Ok(retorno) : BadRequest(retorno);
+                    _livroBusiness.Novo(filter);
+                    retorno = new CriticaDTO { IsOk = true, MensagemRetorno = "Livro cadastrado com sucesso." };
+
+                    return Created("", retorno);
                 }
                 else
                 {
@@ -72,7 +80,6 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
             try
             {
-                if (filter.Ide_Usuario <= 0) throw new Exception("Campo id do usuário é obrigatório!");
                 if (string.IsNullOrEmpty(filter.Autor)) throw new Exception("Campo autor é obrigatório!");
                 if (filter.Ano <= 0) throw new Exception("Campo ano é obrigatório!");
                 if (string.IsNullOrEmpty(filter.Editora)) throw new Exception("Campo editora é obrigatório!");
@@ -82,8 +89,10 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
                 if (tokenValido.IsOk)
                 {
-                    retorno = _livroBusiness.Editar(filter);
-                    return retorno.IsOk ? Ok(retorno) : BadRequest(retorno);
+                    _livroBusiness.Editar(filter);
+                    retorno = new CriticaDTO { IsOk = true, MensagemRetorno = "Livro atualizado com sucesso." };
+
+                    return Ok(retorno);
                 }
                 else
                 {
@@ -109,7 +118,11 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
             try
             {
-                if (ide_usuario <= 0) throw new Exception("Campo id do usuário é obrigatório!");
+                if (ide_usuario <= 0) throw new Exception("Campo id do usuário é obrigatório.");
+
+                bool isExistsEmail = _utilies.VerificaSeExiste(2, ide_usuario.ToString());
+
+                if (!isExistsEmail) throw new Exception($"Não foi possível encontrar um usuário com o ID [{ide_usuario}].");
 
                 var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
 
@@ -131,8 +144,9 @@ namespace WebAPI_My_Home_Library.Controllers.api
                     }
                     else
                     {
-                        retorno = new ResultModel<List<ListarLivrosUsuarioDTO>>(true);
+                        retorno = new ResultModel<List<ListarLivrosUsuarioDTO>>(false);
                         retorno.Messages.Add(new SystemMessageModel { Message = "Este usuário ainda não possui livros cadastrados.", Type = SystemMessageTypeEnum.Info });
+                        return NotFound(retorno);
                     }
 
                 }
@@ -147,29 +161,29 @@ namespace WebAPI_My_Home_Library.Controllers.api
             {
                 retorno = new ResultModel<List<ListarLivrosUsuarioDTO>>(false);
                 retorno.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
-                return NotFound(retorno);
+                return BadRequest(retorno);
             }
   
             return retorno.IsOk ? Ok(retorno) : NotFound(retorno);
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(Livro), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(LivroDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult BuscarPorID([FromHeader(Name = "token")] string token, long ide_livro)
         {
-            CriticaDTO retorno = new CriticaDTO();
+            LivroDTO retorno = new();
 
             try
             {
-                if (ide_livro <= 0) throw new Exception("Campo ID do livro é obrigatório!");
+                if (ide_livro <= 0) throw new Exception("Campo ID do livro é obrigatório.");
 
                 var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
 
                 if (tokenValido.IsOk)
                 {
                     retorno = _livroBusiness.BuscarPorID(ide_livro);
-                    return retorno.IsOk ? Ok(retorno) : BadRequest(retorno);
+                    return Ok(retorno);
                 }
                 else
                 {
@@ -195,14 +209,15 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
             try
             {
-                if (ide_livro <= 0) throw new Exception("Campo ID do livro é obrigatório!");
+                if (ide_livro <= 0) throw new Exception("Campo ID do livro é obrigatório.");
 
                 var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
 
                 if (tokenValido.IsOk)
                 {
-                    retorno = _livroBusiness.Excluir(ide_livro);
-                    return retorno.IsOk ? Ok(retorno) : BadRequest(retorno);
+                    _livroBusiness.Excluir(ide_livro);
+                    retorno = new CriticaDTO { IsOk = true, MensagemRetorno = "Livro excluído com sucesso." };
+                    return Ok(retorno);
                 }
                 else
                 {

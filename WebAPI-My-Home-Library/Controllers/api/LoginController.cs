@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using WebAPI_My_Home_Library.DTOs.Critica;
 using WebAPI_My_Home_Library.DTOs.Login;
 using WebAPI_My_Home_Library.Filters;
 using WebAPI_My_Home_Library.Models;
@@ -48,11 +49,11 @@ namespace WebAPI_My_Home_Library.Controllers.api
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ResultModel<CadastrarUsuarioRetornoDTO>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResultModel<CriticaDTO>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult CadastrarNovoUsuario(NovoUsuarioFilter filter)
         {
-            CadastrarUsuarioRetornoDTO retorno = new CadastrarUsuarioRetornoDTO();
+            CriticaDTO retorno = new();
 
             try
             {
@@ -64,9 +65,11 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
                 filter.Senha = Utilies.SHA512(filter.Senha);
 
-                retorno = _loginBusiness.CadastrarNovoUsuario(filter);
+                _loginBusiness.CadastrarNovoUsuario(filter);
 
-                return retorno.IsOk ? Created(retorno.Ide_Usuario.ToString(), retorno) : BadRequest(retorno);
+                retorno = new CriticaDTO { IsOk = true, MensagemRetorno = "Usuário cadastrado com sucesso." };
+
+                return Created("", retorno);
             }
             catch (Exception ex)
             {

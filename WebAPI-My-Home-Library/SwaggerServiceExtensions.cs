@@ -23,7 +23,7 @@ namespace WebAPI_My_Home_Library
                 {
                     Title = "MyHomeLibrary",
                     Version = "v1",
-                    Description = "Endpoints My Home Library.",
+                    Description = "Endpoints My Home Library - Versão 1.0.0.1.",
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

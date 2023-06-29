@@ -25,8 +25,13 @@ namespace WebAPI_My_Home_Library
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Settings.IsDesenv = Configuration["Ambiente"] == "2"; // 1 - Produção; 2 - Desenvolvimento;
+
             services.AddEntityFrameworkSqlServer()
-                     .AddDbContext<MyHomeLibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStringDesenvolvimento")));
+                     .AddDbContext<MyHomeLibraryContext>(options => options.UseSqlServer(
+                         Settings.IsDesenv ? Configuration.GetConnectionString("ConnectionStringDesenvolvimento") :
+                                                        Configuration.GetConnectionString("ConnectionStringProducao")
+                                                    ));
             services.AddScoped<LoginBusiness>();
             services.AddScoped<UsuarioBusiness>();
             services.AddScoped<LivroBusiness>();
@@ -44,13 +49,13 @@ namespace WebAPI_My_Home_Library
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI - My Home Library", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI - My Home Library - Versão 1.0.0.1", Version = "v1" });
             });
 
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
 
-            Settings.IsDesenv = Configuration["Ambiente"] == "2"; // 1 - Produção; 2 - Desenvolvimento;
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
