@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WebAPI_My_Home_Library.Context;
 using WebAPI_My_Home_Library.DTOs.Critica;
-using WebAPI_My_Home_Library.DTOs.Usuario;
 using WebAPI_My_Home_Library.Filters;
-using WebAPI_My_Home_Library.Models;
 using WebAPI_My_Home_Library.Utils;
-using static WebAPI_My_Home_Library.Enums.EnumCommon;
 
 namespace WebAPI_My_Home_Library.Services
 {

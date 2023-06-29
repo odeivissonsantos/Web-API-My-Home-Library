@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPI_My_Home_Library.DTOs.Critica;
-using WebAPI_My_Home_Library.DTOs.Usuario;
 using WebAPI_My_Home_Library.Filters;
-using WebAPI_My_Home_Library.Models;
 using WebAPI_My_Home_Library.Services;
 
 namespace WebAPI_My_Home_Library.Controllers.api
@@ -51,7 +45,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
                 else
                 {
                     retorno.IsOk = false;
-                    retorno.MensagemRetorno = "Token Inválido";
+                    retorno.MensagemRetorno = retorno.MensagemRetorno;
                     return BadRequest(retorno);
                 }
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_My_Home_Library.Context;
+using WebAPI_My_Home_Library.DTOs.Critica;
 using WebAPI_My_Home_Library.DTOs.Livro;
 using WebAPI_My_Home_Library.Filters;
 using WebAPI_My_Home_Library.Models;
@@ -22,179 +23,149 @@ namespace WebAPI_My_Home_Library.Services
         {
             _myHomeLibraryContext = myHomeLibraryContext;
             _utilies = utilies;
-
         }
 
         #region SALVAR LIVRO
-        public ResultModel<SalvarLivroRetornoDTO> Salvar(SalvarLivroFilter filter)
+        public NovoLivroRetornoDTO Novo(NovoLivroFilter filter)
         {
-            bool novo = false;
             Livro newLivro = new Livro();
             UsuarioLivro newUsuarioLivro = new UsuarioLivro();
-            ResultModel<SalvarLivroRetornoDTO> data;
-
-            if (filter.Ide_Livro <= 0) novo = true;
+            NovoLivroRetornoDTO retorno = new NovoLivroRetornoDTO();
 
             try
             {
-                if (filter.Ide_Usuario <= 0) throw new Exception("Campo id do usuário é obrigatório!");
-                if (string.IsNullOrEmpty(filter.Autor)) throw new Exception("Campo autor é obrigatório!");
-                if (filter.Ano <= 0) throw new Exception("Campo ano é obrigatório!");
-                if (string.IsNullOrEmpty(filter.Editora)) throw new Exception("Campo editora é obrigatório!");
-                if (string.IsNullOrEmpty(filter.Titulo)) throw new Exception("Campo título é obrigatório!");
+                bool isExistsUsuario = _utilies.VerificaSeExiste(2, filter.Ide_Usuario.ToString());
+                if (!isExistsUsuario) throw new Exception("Usuário não encontrado, digite um usuário válido");
 
-                if (!novo)
-                {
-                    var query = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == filter.Ide_Livro).FirstOrDefault();
+                newLivro.Ano = filter.Ano;
+                newLivro.Autor = filter.Autor;
+                newLivro.Codigo_Barras = filter.CodigoBarras;
+                newLivro.Editora = filter.Editora;
+                newLivro.Titulo = filter.Titulo;
+                newLivro.Observacao = filter.Observacao;
+                newLivro.Url_Capa = filter.UrlCapa;
 
-                    if (query == null) throw new Exception("Livro não encontrado!");
-
-                    query.Ano = filter.Ano;
-                    query.Autor = filter.Autor;
-                    query.Codigo_Barras = filter.CodigoBarras;
-                    query.Editora = filter.Editora;
-                    query.Titulo = filter.Titulo;
-                    query.Observacao = filter.Observacao;
-                    query.Url_Capa = filter.UrlCapa;
-
-                    SalvarLivroRetornoDTO retorno = new SalvarLivroRetornoDTO()
-                    {
-                        Mensagem = "Livro atualizado com sucesso",
-                    };
-
-                    _myHomeLibraryContext.Livro.Update(query);
-
-                    data = new ResultModel<SalvarLivroRetornoDTO>(true);
-                    data.Items.Add(retorno);
-
-                }
-                else
-                {
-                    bool isExistsUsuario = _utilies.VerificaSeExiste(3, filter.Ide_Usuario.ToString());
-                    if (!isExistsUsuario) throw new Exception("Usuário não encontrado, digite um usuário válido");
-
-                    newLivro.Ano = filter.Ano;
-                    newLivro.Autor = filter.Autor;
-                    newLivro.Codigo_Barras = filter.CodigoBarras;
-                    newLivro.Editora = filter.Editora;
-                    newLivro.Titulo = filter.Titulo;
-                    newLivro.Observacao = filter.Observacao;
-                    newLivro.Url_Capa = filter.UrlCapa;
-
-                    _myHomeLibraryContext.Livro.Add(newLivro);
-
-                    SalvarLivroRetornoDTO retorno = new SalvarLivroRetornoDTO()
-                    {
-                        Mensagem = "Livro cadastrado com sucesso!",
-                    };
-
-                    data = new ResultModel<SalvarLivroRetornoDTO>(true);
-                    data.Items.Add(retorno);
-
-                }
-
+                _myHomeLibraryContext.Livro.Add(newLivro);
                 _myHomeLibraryContext.SaveChanges();
 
-                if (novo)
-                {
-                    newUsuarioLivro.Ide_Livro = newLivro.Ide_Livro;
-                    newUsuarioLivro.Ide_Usuario = filter.Ide_Usuario;
+                newUsuarioLivro.Ide_Livro = newLivro.Ide_Livro;
+                newUsuarioLivro.Ide_Usuario = filter.Ide_Usuario;
+                
+                _myHomeLibraryContext.Usuario_Livro.Add(newUsuarioLivro);
+                _myHomeLibraryContext.SaveChanges();
 
-                    _myHomeLibraryContext.Usuario_Livro.Add(newUsuarioLivro);
-                    _myHomeLibraryContext.SaveChanges();
-                }
+                retorno = new(newLivro);
+
             }
             catch (Exception ex)
             {
-                data = new ResultModel<SalvarLivroRetornoDTO>(false);
-                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
-
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = ex.Message;
             }
 
-            return data;
+            return retorno;
+        }
+        #endregion
+
+        #region EDITAR LIVRO
+        public CriticaDTO Editar(EditarLivroFilter filter)
+        {
+            CriticaDTO retorno = new CriticaDTO();
+
+            try
+            {
+                var query = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == filter.Ide_Livro).FirstOrDefault();
+
+                if (query == null) throw new Exception("Livro não encontrado!");
+
+                query.Ano = filter.Ano;
+                query.Autor = filter.Autor;
+                query.Codigo_Barras = filter.CodigoBarras;
+                query.Editora = filter.Editora;
+                query.Titulo = filter.Titulo;
+                query.Observacao = filter.Observacao;
+                query.Url_Capa = filter.UrlCapa;
+
+                _myHomeLibraryContext.Livro.Update(query);
+                _myHomeLibraryContext.SaveChanges();
+
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = "Livro atualizado com sucesso";         
+            }
+            catch (Exception ex)
+            {
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = ex.Message;
+            }
+
+            return retorno;
         }
         #endregion
 
         #region LISTAR LIVROS POR USUÁRIO
-        public ResultModel<Livro> BuscarPorUsuario(long ide_usuario)
+        public List<ListarLivrosUsuarioDTO> ListarPorUsuario(long ide_usuario)
         {
-            ResultModel<Livro> data = new ResultModel<Livro>(true);
+            List<ListarLivrosUsuarioDTO> listLivrosUsuario = new List<ListarLivrosUsuarioDTO>();
+            ListarLivrosUsuarioDTO livroUsuario = new ListarLivrosUsuarioDTO();
 
-            try
+            var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Usuario == ide_usuario).ToList();
+
+            if (query.Any())
             {
-                if (ide_usuario <= 0) throw new Exception("Campo id do usuário é obrigatório!");
-                var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Usuario == ide_usuario).ToList();
-
-                if (query.Any())
+                foreach (var item in query)
                 {
-                    foreach (var item in query)
+                    Livro livro = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == item.Ide_Livro).FirstOrDefault();
+
+                    if (livro != null)
                     {
-                        Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == item.Ide_Livro).FirstOrDefault();
-
-                        if(livroUsuario != null)
-                        {
-                            data.Items.Add(livroUsuario);
-                        }
+                        livroUsuario = new(livro);
+                        listLivrosUsuario.Add(livroUsuario);
                     }
-                    data.Pages.TotalItems = data.Items.Count();
-                    
-                }
-                else
-                {
-                    data = new ResultModel<Livro>(true);
-                    data.Messages.Add(new SystemMessageModel { Message = "Este usuário ainda não possui livros cadastrados.", Type = SystemMessageTypeEnum.Info });
                 }
             }
-            catch (Exception ex)
-            {
-                data = new ResultModel<Livro>(false);
-                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
 
-            }
-
-            return data;
+            return listLivrosUsuario;
         }
         #endregion
 
         #region BUSCAR LIVRO POR ID
-        public ResultModel<Livro> BuscarPorID(long ide_livro)
+        public LivroDTO BuscarPorID(long ide_livro)
         {
-            ResultModel<Livro> data = new ResultModel<Livro>(true);
+            LivroDTO retorno = new LivroDTO();
 
             try
             {
-                if (ide_livro <= 0) throw new Exception("Campo id do livro é obrigatório!");
-                Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
+                Livro livro = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
 
-                if (livroUsuario != null)
+                if (livro != null)
                 {
-                    data.Items.Add(livroUsuario);
+                    var usuarioLivro = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Livro == livro.Ide_Livro).FirstOrDefault();
+
+                    retorno = new(livro, usuarioLivro);
                 }
                 else
                 {
-                    data = new ResultModel<Livro>(true);
-                    data.Messages.Add(new SystemMessageModel { Message = "Livro não encontrado!", Type = SystemMessageTypeEnum.Info });
+                    retorno.IsOk = false;
+                    retorno.MensagemRetorno = $"O livro com o ID [{ide_livro}] não foi encontrado.";
                 }
             }
             catch (Exception ex)
             {
-                data = new ResultModel<Livro>(false);
-                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
-
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = ex.Message;
             }
 
-            return data;
+            return retorno;
         }
         #endregion
 
         #region EXCLUIR LIVRO
-        public ResultModel<string> Excluir(long ide_livro)
+        public CriticaDTO Excluir(long ide_livro)
         {
-            ResultModel<string> data = new ResultModel<string>(true);
+            CriticaDTO retorno = new CriticaDTO();
 
             try
             {
-                if (ide_livro <= 0) throw new Exception("Campo id do livro é obrigatório!");
                 Livro livroUsuario = _myHomeLibraryContext.Livro.Where(x => x.Ide_Livro == ide_livro).FirstOrDefault();
 
                 if (livroUsuario == null) throw new Exception("Livro não encontrado!");
@@ -202,24 +173,19 @@ namespace WebAPI_My_Home_Library.Services
                 var query = _myHomeLibraryContext.Usuario_Livro.Where(x => x.Ide_Livro == livroUsuario.Ide_Livro).FirstOrDefault();
 
                 _myHomeLibraryContext.Livro.Remove(livroUsuario);
-                _myHomeLibraryContext.SaveChanges();
-
                 _myHomeLibraryContext.Usuario_Livro.Remove(query);
                 _myHomeLibraryContext.SaveChanges();
 
-                data.Messages.Add(new SystemMessageModel { Message = "Livro excluído com sucesso!", Type = SystemMessageTypeEnum.Success });
-                data.Items.Add(data.Messages[0].Message);
-
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = "Livro excluído com sucesso!";
             }
             catch (Exception ex)
             {
-                data = new ResultModel<string>(false);
-                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
-                data.Items.Add(data.Messages[0].Message);
-
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = ex.Message;
             }
 
-            return data;
+            return retorno;
         }
         #endregion
 

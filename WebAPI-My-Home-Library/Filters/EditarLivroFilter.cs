@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebAPI_My_Home_Library.Filters
 {
-    public class SalvarLivroFilter
+    public class EditarLivroFilter
     {
         public long Ide_Livro { get; set; }
         public string Autor { get; set; }
