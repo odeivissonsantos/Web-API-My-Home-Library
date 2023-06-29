@@ -51,7 +51,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
                 else
                 {
                     retorno.IsOk = false;
-                    retorno.MensagemRetorno = retorno.MensagemRetorno;
+                    retorno.MensagemRetorno = tokenValido.MensagemRetorno;
                     return BadRequest(retorno);
                 }
             }
@@ -88,7 +88,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
                 else
                 {
                     retorno.IsOk = false;
-                    retorno.MensagemRetorno = retorno.MensagemRetorno;
+                    retorno.MensagemRetorno = tokenValido.MensagemRetorno;
                     return BadRequest(retorno);
                 }
             }
@@ -174,7 +174,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
                 else
                 {
                     retorno.IsOk = false;
-                    retorno.MensagemRetorno = retorno.MensagemRetorno;
+                    retorno.MensagemRetorno = tokenValido.MensagemRetorno;
                     return BadRequest(retorno);
                 }
             }
@@ -207,7 +207,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
                 else
                 {
                     retorno.IsOk = false;
-                    retorno.MensagemRetorno = retorno.MensagemRetorno;
+                    retorno.MensagemRetorno = tokenValido.MensagemRetorno;
                     return BadRequest(retorno);
                 }
             }

@@ -55,6 +55,40 @@ namespace WebAPI_My_Home_Library.Services
 
         #endregion
 
+        #region ALTERAR SENHA
+
+        public CriticaDTO AlterarSenha(AlterarSenhaFilter filter)
+        {
+
+            CriticaDTO retorno = new CriticaDTO();
+
+            try
+            {
+                var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
+
+                if (query == null) throw new Exception("Usuário não encontrado!");
+                if (query.Senha != filter.SenhaAtual) throw new Exception("Senha Atual não coincide a Senha Cadastrada, verifique os dados e tente novamente.");
+
+                query.Senha = filter.NovaSenha;
+
+                _myHomeLibraryContext.Update(query);
+                _myHomeLibraryContext.SaveChanges();
+
+                retorno.IsOk = true;
+                retorno.MensagemRetorno = "Senha atualizada com sucesso";
+
+            }
+            catch (Exception ex)
+            {
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = ex.Message;
+            }
+
+            return retorno;
+        }
+
+        #endregion
+
 
     }
 }
