@@ -116,7 +116,7 @@ namespace WebAPI_My_Home_Library.Services
         #endregion
 
         #region LISTAR LIVROS POR USUÁRIO
-        public ResultModel<Livro> BuscarLivrosPorUsuario(long ide_usuario)
+        public ResultModel<Livro> BuscarPorUsuario(long ide_usuario)
         {
             ResultModel<Livro> data = new ResultModel<Livro>(true);
 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI_My_Home_Library.DTOs.Critica;
 using WebAPI_My_Home_Library.DTOs.Usuario;
 using WebAPI_My_Home_Library.Filters;
 using WebAPI_My_Home_Library.Models;
@@ -25,26 +26,41 @@ namespace WebAPI_My_Home_Library.Controllers.api
             _loginBusiness = loginBusiness;
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(ResultModel<SalvarUsuarioRetornoDTO>), StatusCodes.Status200OK)]
+        [HttpPut]
+        [ProducesResponseType(typeof(CriticaDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ResultModel<SalvarUsuarioRetornoDTO> AlterarDados([FromHeader(Name = "token")] string token, AlterarUsuarioFilter filter)
+        public IActionResult AlterarDados([FromHeader(Name = "token")] string token, AlterarUsuarioFilter filter)
         {
-            ResultModel<SalvarUsuarioRetornoDTO> data = new();
+            CriticaDTO retorno = new CriticaDTO();
 
-            var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
-
-            if (tokenValido.IsOk)
+            try
             {
-                data = _usuarioBusiness.AlterarDados(filter);
-            }
-            else
-            {
-                data = new ResultModel<SalvarUsuarioRetornoDTO>(false);
-                data.Messages = tokenValido.Messages;
-            }
+                if (string.IsNullOrEmpty(token)) throw new Exception("Parâmetro Token é obrigatório");
+                if (filter.Ide_Usuario <= 0 ) throw new Exception("Campo ID do usuário é obrigatório");
+                if (string.IsNullOrEmpty(filter.Nome)) throw new Exception("Campo Nome é obrigatório");
+                if (string.IsNullOrEmpty(filter.Sobrenome)) throw new Exception("Campo Sobrenome é obrigatório");
+                if (string.IsNullOrEmpty(filter.Email)) throw new Exception("Campo Email é obrigatório");
 
-            return data;
+                var tokenValido = _loginBusiness.ValidarToken(new LoginFilter { Token = token });
+
+                if (tokenValido.IsOk)
+                {
+                    retorno = _usuarioBusiness.AlterarDados(filter);
+                    return retorno.IsOk? Ok(retorno) : BadRequest(retorno);
+                }
+                else
+                {
+                    retorno.IsOk = false;
+                    retorno.MensagemRetorno = "Token Inválido";
+                    return BadRequest(retorno);
+                }
+            }
+            catch (Exception ex)
+            {
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = ex.Message;
+                return BadRequest(retorno);
+            }   
         }
 
     }

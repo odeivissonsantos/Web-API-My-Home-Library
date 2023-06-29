@@ -39,7 +39,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
         [HttpGet]
         [ProducesResponseType(typeof(ResultModel<Livro>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ResultModel<Livro> BuscarLivrosPorUsuario([FromHeader(Name = "token")] string token, long ide_usuario)
+        public ResultModel<Livro> BuscarPorUsuario([FromHeader(Name = "token")] string token, long ide_usuario)
         {
             ResultModel<Livro> data = new();
 
@@ -47,7 +47,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
 
             if(tokenValido.IsOk)
             {
-                data = _livroBusiness.BuscarLivrosPorUsuario(ide_usuario);
+                data = _livroBusiness.BuscarPorUsuario(ide_usuario);
             }
             else
             {
@@ -70,7 +70,7 @@ namespace WebAPI_My_Home_Library.Controllers.api
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(ResultModel<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResultModel<string>), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ResultModel<string> Excluir([FromHeader(Name = "token")] string token, long ide_livro)
         {

@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\WebAPI-My-Home-Library"
+    "\\WebAPI-My-Home-Library",
+    "\\WebAPI-My-Home-Library\\Services"
   ],
-  "SelectedNode": "\\WebAPI-My-Home-Library\\Startup.cs",
+  "SelectedNode": "\\WebAPI-My-Home-Library\\WebAPI-My-Home-Library.sln",
   "PreviewInSolutionExplorer": false
 }

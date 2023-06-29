@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_My_Home_Library.Context;
+using WebAPI_My_Home_Library.DTOs.Critica;
 using WebAPI_My_Home_Library.DTOs.Usuario;
 using WebAPI_My_Home_Library.Filters;
 using WebAPI_My_Home_Library.Models;
@@ -26,14 +27,13 @@ namespace WebAPI_My_Home_Library.Services
 
         #region SALVAR USUÁRIO
 
-        public ResultModel<SalvarUsuarioRetornoDTO> AlterarDados(AlterarUsuarioFilter filter)
+        public CriticaDTO AlterarDados(AlterarUsuarioFilter filter)
         {
 
-            ResultModel<SalvarUsuarioRetornoDTO> data;
+            CriticaDTO retorno = new CriticaDTO();
 
             try
             {
-
                 var query = _myHomeLibraryContext.Usuario.Where(x => x.Ide_Usuario == filter.Ide_Usuario).FirstOrDefault();
 
                 if (query == null) throw new Exception("Usuário não encontrado!");
@@ -45,24 +45,17 @@ namespace WebAPI_My_Home_Library.Services
                 _myHomeLibraryContext.Update(query);
                 _myHomeLibraryContext.SaveChanges();
 
-
-                SalvarUsuarioRetornoDTO retorno = new SalvarUsuarioRetornoDTO()
-                {
-                    Mensagem = "Usuário atualizado com sucesso",
-                };
-
-                data = new ResultModel<SalvarUsuarioRetornoDTO>(true);
-                data.Items.Add(retorno);
+                retorno.IsOk = true;
+                retorno.MensagemRetorno = "Usuário atualizado com sucesso";
  
             }
             catch (Exception ex)
             {
-                data = new ResultModel<SalvarUsuarioRetornoDTO>(false);
-                data.Messages.Add(new SystemMessageModel { Message = ex.Message, Type = SystemMessageTypeEnum.Error });
-
+                retorno.IsOk = false;
+                retorno.MensagemRetorno = ex.Message;
             }
 
-            return data;
+            return retorno;
         }
 
         #endregion
