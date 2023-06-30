@@ -144,9 +144,9 @@ namespace WebAPI_My_Home_Library.Controllers.api
                     }
                     else
                     {
-                        retorno = new ResultModel<List<ListarLivrosUsuarioDTO>>(false);
+                        retorno = new ResultModel<List<ListarLivrosUsuarioDTO>>(true);
                         retorno.Messages.Add(new SystemMessageModel { Message = "Este usuário ainda não possui livros cadastrados.", Type = SystemMessageTypeEnum.Info });
-                        return NotFound(retorno);
+                        return Ok(retorno);
                     }
 
                 }
