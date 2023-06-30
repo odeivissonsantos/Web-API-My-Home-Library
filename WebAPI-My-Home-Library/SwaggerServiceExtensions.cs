@@ -38,7 +38,6 @@ namespace WebAPI_My_Home_Library
         public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app)
 
         {
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

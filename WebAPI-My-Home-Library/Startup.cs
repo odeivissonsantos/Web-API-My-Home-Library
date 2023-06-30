@@ -71,8 +71,6 @@ namespace WebAPI_My_Home_Library
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI - My Home Library v1"));
             }
           
             app.UseHttpsRedirection();
@@ -82,6 +80,9 @@ namespace WebAPI_My_Home_Library
             app.UseAuthorization();
 
             app.UseCors("CorsPolicy");
+
+            app.UseSwaggerDocumentation();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI - My Home Library v1"));
 
             app.UseEndpoints(endpoints =>
             {
