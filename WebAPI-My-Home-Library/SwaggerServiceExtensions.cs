@@ -42,7 +42,7 @@ namespace WebAPI_My_Home_Library
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Home Library V1");
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MEY HOME LIBRARY V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MY HOME LIBRARY V1");
                 c.RoutePrefix = "swagger";
                 c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
 
